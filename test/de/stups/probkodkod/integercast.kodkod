@@ -1,0 +1,15 @@
+problem integercast
+
+((intrelations (si 4) (ai 0 9)))
+
+ ((x subset ai)
+  (y subset ai))
+  
+ (and
+   (and
+     (one (relref x))
+     (one (relref y)))
+   (and
+     (equals (relref x) (int2intset (5)))
+     (equals (expr2int (relref y))
+             (add (2) (expr2int (relref x))))))

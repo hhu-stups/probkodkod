@@ -1,0 +1,85 @@
+<?xml version="1.0"?>
+<project name="probkodkod" default="jar" basedir=".">
+	
+	<property name="src" value="src"/>
+	<property name="test" value="test"/>
+	<property name="build" value="build"/>
+	<property name="parser" value="parser"/>
+	<property name="testparser" value="testparser"/>
+	<property name="jar" value="${build}/jar"/>
+	<property name="main.class" value="de.stups.probkodkod.KodkodInteraction"/>
+	<property name="lib" value="lib"/>
+	<property name="kodkod" value="${lib}/kodkod.jar"/>
+	<property name="uptodate" value="uptodate"/>
+	
+	<taskdef name="sablecc" classname="org.sablecc.ant.taskdef.Sablecc"/>
+	
+	<target name="init"> 
+		<mkdir dir="${build}"/>
+		<mkdir dir="${jar}"/>
+		<uptodate property="parser.uptodate">
+			<srcfiles dir="${src}" includes="*.grammar"/>
+			<mapper type="merge" to="../${parser}/${uptodate}"/>
+		</uptodate>
+		<uptodate property="testparser.uptodate">
+			<srcfiles dir="${test}" includes="*.grammar"/>
+			<mapper type="merge" to="../${testparser}/${uptodate}"/>
+		</uptodate>
+	</target>
+	
+	<target name="clear" depends="init">
+		<delete> <fileset dir="${build}" includes="**/*"/> </delete>
+	</target>
+	
+	<target name="parser" depends="init" unless="parser.uptodate" description="Generate the parser classes">
+		<delete> <fileset dir="${parser}" includes="**/*"/> </delete>
+		<sablecc src="${src}" includes="*.grammar" outputdirectory="${parser}"/>
+		<touch file="${parser}/${uptodate}"/>
+	</target>
+
+	<target name="testparser" depends="init" unless="testparser.uptodate" description="Generate the parser classes for the tests">
+		<delete> <fileset dir="${testparser}" includes="**/*"/> </delete>
+		<sablecc src="${test}" includes="*.grammar" outputdirectory="${testparser}"/>
+		<touch file="${testparser}/${uptodate}"/>
+	</target>
+
+	<target name="compile" depends="init,parser">
+		<!-- Compile the java code -->
+		<javac srcdir="${parser}" destdir="${jar}" debug="true"/>
+		<javac srcdir="${src}" destdir="${jar}" debug="true">
+			<classpath location="${kodkod}"/>
+		</javac>
+		<copy todir="${jar}">
+			<fileset dir="${parser}">
+				<exclude name="**/*.java"/>
+				<exclude name="${uptodate}"/>
+			</fileset>
+		</copy>
+	</target>
+	
+	<target name="manifest" depends="init">
+		<manifest file="${build}/MANIFEST.MF">
+			<attribute name="Built-By" value="${user.name}"/>
+			<attribute name="Main-Class" value="${main.class}"/>
+			<attribute name="Class-Path" value="kodkod.jar"/>
+		</manifest>
+	</target>
+	
+	<target name="jar" depends="clear,compile,manifest" description="Build the jar file">
+		<jar destfile="${build}/probkodkod.jar"
+		     basedir="${jar}"
+			 manifest="${build}/MANIFEST.MF"
+		/>
+	</target>
+	
+	<target name="tar" depends="jar" description="Build a tar file with all needed files">
+		<tar destfile="${build}/probkodkod.tar.gz"
+		     compression="gzip">
+			<tarfileset dir="${build}"> <include name="probkodkod.jar"/> </tarfileset>
+			<tarfileset dir="${lib}">
+				<include name="kodkod.jar"/>
+				<include name="libminisat.so"/>
+			</tarfileset>
+		</tar>
+	</target>
+</project>

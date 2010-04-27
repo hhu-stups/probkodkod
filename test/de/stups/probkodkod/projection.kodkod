@@ -1,0 +1,20 @@
+problem projection
+
+((world 2))
+
+ ((x singleton exact world (<0>))
+  (y singleton exact world (<1>))
+  (s singleton subset world world)
+  (t subset world world world world))
+  
+   (and
+     (and
+       (equals
+         (prj (0) (relref s))
+         (relref x))
+       (equals
+         (prj (1) (relref s))
+         (relref y)))
+     (equals
+       (prj (1 0 0 1) (relref s))
+       (relref t)))

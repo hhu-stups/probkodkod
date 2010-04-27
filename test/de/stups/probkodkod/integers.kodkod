@@ -1,0 +1,17 @@
+problem integers
+
+((intrelations (si 2))
+ (w 2))
+
+ ((x exact  w (<0>))
+  (y exact  w (<1>))
+  (a subset w)
+  (b subset w)
+  (c subset w))
+  
+ (and
+   (and (in (relref x) (relref a))
+        (in (relref y) (relref b)))
+   (and (equals (card (relref a)) (card (relref b)))
+        (lte (add (card (relref a)) (1))
+             (card (relref c)))))

@@ -1,0 +1,202 @@
+Package
+  de.stups.probkodkod.parser;
+
+Helpers
+  all = [0 .. 0xffff];
+  digit = ['0' .. '9'];
+  uppercase = ['a' .. 'z'];
+  lowercase = ['A' .. 'Z'];
+  alpha = (uppercase | lowercase);
+
+Tokens
+  blanks = (' ' | 9 | 10 | 13)+;
+  number = digit+;
+  parenl = '(';
+  parenr = ')';
+  anglel = '<';
+  angler = '>';
+  bracketl = '[';
+  bracketr = ']';
+  
+  keyword_problem = 'problem';
+  keyword_exact = 'exact';
+  keyword_subset = 'subset';
+  keyword_ints = 'intrelations';
+  keyword_singleton = 'singleton';
+  
+  keyword_true = 'true';
+  keyword_false = 'false';
+  keyword_in = 'in';
+  keyword_equals = 'equals';
+  keyword_some = 'some';
+  keyword_one = 'one';
+  keyword_no = 'no';
+  keyword_lone = 'lone';
+  keyword_set = 'set';
+  keyword_not = 'not';
+  keyword_and = 'and';
+  keyword_or = 'or';
+  keyword_implies = 'implies';
+  keyword_iff = 'iff';
+  keyword_all = 'all';
+  keyword_exists = 'exists';
+  keyword_union = 'union';
+  keyword_intersection = 'intersection';
+  keyword_diff = 'difference';
+  keyword_join = 'join';
+  keyword_product = 'product';
+  keyword_overwrite = 'overwrite';
+  keyword_transpose = 'transpose';
+  keyword_closure = 'closure';
+  keyword_comprehension = 'comp'; 
+  keyword_empty = 'empty';
+  keyword_ranges = 'ranges';
+  keyword_ext = 'ext';
+  keyword_relref = 'relref';
+  keyword_varref = 'varref';
+  keyword_request = 'request';
+  keyword_stop = 'stop';
+  keyword_list = 'list';
+  keyword_positive = 'pos';
+  keyword_negative = 'neg';
+  keyword_cardinality = 'card';
+  keyword_addition = 'add';
+  keyword_subtraction = 'sub';
+  keyword_greater = 'gt';
+  keyword_greater_equal = 'gte';
+  keyword_lesser = 'lt';
+  keyword_lesser_equal = 'lte';
+  keyword_projection = 'prj';
+  keyword_partial_function = 'pfunc';
+  keyword_total_function = 'func';
+  
+  keyword_int2pow2 = 'int2pow2';
+  keyword_int2intset = 'int2intset';
+  keyword_expr2int = 'expr2int';
+  
+  keyword_pow2 = 'pow2';
+  keyword_intset = 'intset';
+
+  keyword_integer = 'int';
+  
+  minus = '-';
+  
+  identifier = alpha+ digit*;
+  
+  fullstop = '.';
+
+Ignored Tokens
+  blanks;
+
+Productions
+  action =
+      {problem} problem
+    | {request} request
+    | {list}    list
+    | {stop}    stop
+    | {none};
+
+  problem = keyword_problem [id]:identifier
+    [tpl]:parenl [types]:type* [tpr]:parenr
+    [rpl]:parenl [relations]:relation* [rpr]:parenr formula;
+    
+  znumber =
+      {pos} number
+    | {neg} minus number;
+    
+  type = 
+      {standard}    [ol]:parenl [id]:identifier [size]:number [or]:parenr
+    | {intrelation} [ol]:parenl keyword_ints [pow2]:powpart [intatoms]:bitpart? [rl]:parenr;
+    
+  powpart = [ol]:parenl [id]:identifier [num]:number [or]:parenr;
+  bitpart = [ol]:parenl [id]:identifier [lower]:number [upper]:number [or]:parenr;
+  
+  relation = [ol]:parenl [id]:identifier [singleton]:keyword_singleton? [extsub]:reltype [types]:identifier+ [elements]:tupleset? [or]:parenr;
+  reltype = {exact} keyword_exact | {subset} keyword_subset;
+  
+  tupleset = [ol]:parenl [tuples]:tuple+ [or]:parenr;
+  tuple = anglel [numbers]:number+ angler;
+   
+  range =
+      {typeref} identifier
+    | {default} bracketl identifier [lower]:number [upper]:number bracketr;
+  
+  formula = parenl innerformula parenr;
+  
+  innerformula =
+      {const}   log_const
+    | {mult}    multiplicity expression
+    | {rel}     logop_rel [a]:expression [b]:expression 
+    | {not}     keyword_not  formula
+    | {binary}  logop_binary [a]:formula [b]:formula
+    | {quant}   quantifier parenl decls parenr formula
+    | {int}     int_comp_op [a]:intexpression [b]:intexpression
+    | {func}    logop_function [obj]:expression [dom]:expression [ran]:expression;
+      
+  log_const = {true} keyword_true | {false} keyword_false;
+  logop_rel = {in} keyword_in | {equals} keyword_equals;
+  logop_function = {total} keyword_total_function | {partial} keyword_partial_function;
+  logop_binary = {and} keyword_and | {or} keyword_or | {implies} keyword_implies | {iff} keyword_iff;
+  quantifier = {all} keyword_all | {exists} keyword_exists;
+  decls = {nil} | {cons} parenl [id]:identifier [arity]:number multiplicity expression parenr decls;
+  
+  multiplicity =
+      {one}  keyword_one
+    | {some} keyword_some
+    | {no}   keyword_no
+    | {lone} keyword_lone
+    | {set}  keyword_set;
+
+  int_comp_op =
+      {equals}       keyword_equals
+    | {greater}      keyword_greater
+    | {greaterequal} keyword_greater_equal
+    | {lesser}       keyword_lesser
+    | {lesserequal}  keyword_lesser_equal;  
+
+  expression = parenl innerexpression parenr;
+  innerexpression =
+      {const}  expr_const
+    | {unary}  expr_unop  expression
+    | {binary} expr_binop [a]:expression [b]:expression
+    | {relref} keyword_relref identifier
+    | {varref} keyword_varref identifier
+    | {comp}   keyword_comprehension parenl decls parenr formula
+    | {prj}    keyword_projection parenl [numbers]:number+ parenr expression
+    | {cast}   expr_cast intexpression;
+
+  expr_cast = {pow2} keyword_int2pow2 | {intset} keyword_int2intset; 
+  expr_const = {empty} keyword_empty;
+
+  expr_binop =
+      {union}     keyword_union
+    | {inter}     keyword_intersection
+    | {diff}      keyword_diff
+    | {join}      keyword_join
+    | {product}   keyword_product
+    | {overwrite} keyword_overwrite;
+    
+  expr_unop =
+      {transpose} keyword_transpose
+    | {closure}   keyword_closure;
+
+  intexpression = parenl innerintexpression parenr;
+  innerintexpression =
+      {const}     number
+    | {card}      keyword_cardinality expression
+    | {binary}    intexpr_binop [a]:intexpression [b]:intexpression
+    | {cast}      keyword_expr2int expression;
+  
+  intexpr_binop =
+      {add}       keyword_addition
+    | {sub}       keyword_subtraction;  
+
+  request = keyword_request [problem]:identifier [size]:number reqtype [al]:parenl [arguments]:argument* [ar]:parenr;
+  argument = parenl identifier [tuples]:tuple* parenr;
+  reqtype = 
+      {pos} keyword_positive
+    | {neg} keyword_negative; 
+  
+  list = keyword_list [problem]:identifier [size]:number;
+
+  stop = keyword_stop;

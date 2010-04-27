@@ -1,0 +1,30 @@
+problem functions
+
+ ((d 2) (r 2))
+ 
+ ((x  singleton exact d (<0>))
+  (y  singleton exact r (<0>))
+  (pf subset d r)
+  (tf subset d r))
+  
+ (and
+   (and
+     (pfunc (relref pf) (relref d) (relref r))
+     (func (relref tf) (relref d) (relref r)))
+   (and
+     (and
+       (equals
+         (relref r)
+         (join
+           (relref d)
+           (relref tf)))
+       (in
+         (relref pf)
+         (relref tf)))
+     (in
+       (relref y)
+       (join
+         (relref x)
+         (relref pf)))))
+
+   
