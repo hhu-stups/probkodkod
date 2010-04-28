@@ -5,7 +5,6 @@
 	<property name="test" value="test"/>
 	<property name="build" value="build"/>
 	<property name="parser" value="parser"/>
-	<property name="testparser" value="testparser"/>
 	<property name="jar" value="${build}/jar"/>
 	<property name="main.class" value="de.stups.probkodkod.KodkodInteraction"/>
 	<property name="lib" value="lib"/>
@@ -21,10 +20,6 @@
 			<srcfiles dir="${src}" includes="*.grammar"/>
 			<mapper type="merge" to="../${parser}/${uptodate}"/>
 		</uptodate>
-		<uptodate property="testparser.uptodate">
-			<srcfiles dir="${test}" includes="*.grammar"/>
-			<mapper type="merge" to="../${testparser}/${uptodate}"/>
-		</uptodate>
 	</target>
 	
 	<target name="clear" depends="init">
@@ -35,12 +30,6 @@
 		<delete> <fileset dir="${parser}" includes="**/*"/> </delete>
 		<sablecc src="${src}" includes="*.grammar" outputdirectory="${parser}"/>
 		<touch file="${parser}/${uptodate}"/>
-	</target>
-
-	<target name="testparser" depends="init" unless="testparser.uptodate" description="Generate the parser classes for the tests">
-		<delete> <fileset dir="${testparser}" includes="**/*"/> </delete>
-		<sablecc src="${test}" includes="*.grammar" outputdirectory="${testparser}"/>
-		<touch file="${testparser}/${uptodate}"/>
 	</target>
 
 	<target name="compile" depends="init,parser">
