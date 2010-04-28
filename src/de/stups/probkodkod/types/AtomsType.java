@@ -24,4 +24,9 @@ public class AtomsType extends Type {
 		final int atomIndex = tuple.atomIndex(index);
 		pto.printNumber(atomIndex - interval.getLower());
 	}
+
+	@Override
+	public boolean oneValueNeedsCompleteTupleSet() {
+		return false;
+	}
 }

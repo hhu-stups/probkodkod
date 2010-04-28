@@ -35,4 +35,9 @@ public class Pow2Type extends Type {
 		}
 		pto.printNumber(result);
 	}
+
+	@Override
+	public boolean oneValueNeedsCompleteTupleSet() {
+		return true;
+	}
 }

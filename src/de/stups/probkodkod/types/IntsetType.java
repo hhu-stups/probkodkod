@@ -29,4 +29,9 @@ public class IntsetType extends Type {
 		final int indexInType = atomIndex - interval.getLower();
 		pto.printNumber(values[indexInType]);
 	}
+
+	@Override
+	public boolean oneValueNeedsCompleteTupleSet() {
+		return false;
+	}
 }

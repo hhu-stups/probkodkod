@@ -20,6 +20,7 @@ public class RelationInfo {
 	private final AbstractBound bound;
 	private final boolean isSingleton;
 	private final Type[] types;
+	private final boolean oneValueNeedsCompleteTupleSet;
 
 	public RelationInfo(final String id, final Relation relation,
 			final AbstractBound bound, final boolean isSingleton,
@@ -29,6 +30,12 @@ public class RelationInfo {
 		this.bound = bound;
 		this.isSingleton = isSingleton;
 		this.types = types;
+
+		boolean needsCompleteTupleSet = false;
+		for (int i = 0; i < types.length; i++) {
+			needsCompleteTupleSet |= types[i].oneValueNeedsCompleteTupleSet();
+		}
+		this.oneValueNeedsCompleteTupleSet = needsCompleteTupleSet;
 
 		if (bound.isVariable()) {
 			if (id == null || relation == null)
@@ -98,4 +105,7 @@ public class RelationInfo {
 		bound.setBound(relation, bounds);
 	}
 
+	public boolean oneValueNeedsCompleteTupleSet() {
+		return oneValueNeedsCompleteTupleSet;
+	}
 }

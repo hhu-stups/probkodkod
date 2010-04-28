@@ -50,6 +50,8 @@ public abstract class Type {
 	public abstract void writeResult(IPrologTermOutput pto, int index,
 			Tuple tuple, TupleSet tupleSet);
 
+	public abstract boolean oneValueNeedsCompleteTupleSet();
+
 	@Override
 	public String toString() {
 		return (name == null ? "<unnamed>" : name) + interval.toString();
