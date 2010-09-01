@@ -225,7 +225,7 @@ public class Problem {
 	/**
 	 * This method should be called after registering all types and before
 	 * adding any other relations. It creates an universe consisting of enough
-	 * atoms to enclose all types and instantiates a {@link TypedTupleFactory}.
+	 * atoms to enclose all types.
 	 * 
 	 * This method should only be called once.
 	 */
