@@ -45,4 +45,17 @@ public final class IntTools {
 		throw new IllegalStateException(
 				"End of isPow2 should never be reached.");
 	}
+
+	public static int countOneBits(int integer) {
+		int pow2 = 1;
+		int count = 0;
+		while (integer != 0) {
+			if ((integer & pow2) != 0) {
+				count++;
+				integer &= ~pow2;
+			}
+			pow2 <<= 1;
+		}
+		return count;
+	}
 }

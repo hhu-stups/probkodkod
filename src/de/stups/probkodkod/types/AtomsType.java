@@ -13,7 +13,7 @@ import de.stups.probkodkod.prolog.IPrologTermOutput;
  * 
  * @author plagge
  */
-public class AtomsType extends Type {
+public class AtomsType extends SetEnabledType {
 	public AtomsType(final String name, final IntegerIntervall interval) {
 		super(name, interval);
 	}
@@ -26,7 +26,9 @@ public class AtomsType extends Type {
 	}
 
 	@Override
-	public boolean oneValueNeedsCompleteTupleSet() {
-		return false;
+	public int encodeElement(final int element) {
+		if (element < 0 || element >= interval.getSize())
+			throw new IllegalArgumentException("element out of bounds");
+		return interval.getLower() + element;
 	}
 }

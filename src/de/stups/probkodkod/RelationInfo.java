@@ -6,7 +6,7 @@ package de.stups.probkodkod;
 import kodkod.ast.Relation;
 import kodkod.instance.Bounds;
 import de.stups.probkodkod.bounds.AbstractBound;
-import de.stups.probkodkod.types.Type;
+import de.stups.probkodkod.types.TupleType;
 
 /**
  * This class contains various information about a relation that is declared for
@@ -18,24 +18,14 @@ public class RelationInfo {
 	private final String id;
 	private final Relation relation;
 	private final AbstractBound bound;
-	private final boolean isSingleton;
-	private final Type[] types;
-	private final boolean oneValueNeedsCompleteTupleSet;
+	private final TupleType type;
 
 	public RelationInfo(final String id, final Relation relation,
-			final AbstractBound bound, final boolean isSingleton,
-			final Type[] types) {
+			final AbstractBound bound, final TupleType type) {
 		this.id = id;
 		this.relation = relation;
 		this.bound = bound;
-		this.isSingleton = isSingleton;
-		this.types = types;
-
-		boolean needsCompleteTupleSet = false;
-		for (int i = 0; i < types.length; i++) {
-			needsCompleteTupleSet |= types[i].oneValueNeedsCompleteTupleSet();
-		}
-		this.oneValueNeedsCompleteTupleSet = needsCompleteTupleSet;
+		this.type = type;
 
 		if (bound.isVariable()) {
 			if (id == null || relation == null)
@@ -81,15 +71,15 @@ public class RelationInfo {
 	 *         relation
 	 */
 	public boolean isSingleton() {
-		return isSingleton;
+		return type.isSingleton();
 	}
 
 	/**
 	 * @return the n types of this n-ary relation, never <code>null</code>, all
 	 *         elements are not <code>null</code>.
 	 */
-	public Type[] getTypes() {
-		return types;
+	public TupleType getTupleType() {
+		return type;
 	}
 
 	/**
@@ -105,7 +95,4 @@ public class RelationInfo {
 		bound.setBound(relation, bounds);
 	}
 
-	public boolean oneValueNeedsCompleteTupleSet() {
-		return oneValueNeedsCompleteTupleSet;
-	}
 }

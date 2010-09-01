@@ -3,6 +3,9 @@
  */
 package de.stups.probkodkod.types;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import kodkod.instance.Tuple;
 import kodkod.instance.TupleSet;
 import de.stups.probkodkod.IntegerIntervall;
@@ -13,13 +16,17 @@ import de.stups.probkodkod.prolog.IPrologTermOutput;
  * 
  * @author plagge
  */
-public class IntsetType extends Type {
+public class IntsetType extends SetEnabledType {
 	private final int[] values;
+	private final Map<Integer, Integer> intToAtom = new HashMap<Integer, Integer>();
 
 	public IntsetType(final String name, final IntegerIntervall interval,
 			final int[] values) {
 		super(name, interval);
 		this.values = values;
+		for (int i = 0; i < values.length; i++) {
+			intToAtom.put(values[i], i);
+		}
 	}
 
 	@Override
@@ -31,7 +38,11 @@ public class IntsetType extends Type {
 	}
 
 	@Override
-	public boolean oneValueNeedsCompleteTupleSet() {
-		return false;
+	public int encodeElement(final int element) {
+		Integer atom = intToAtom.get(element);
+		if (atom == null)
+			throw new IllegalArgumentException("integer out of bounds");
+		return interval.getLower() + atom;
+
 	}
 }

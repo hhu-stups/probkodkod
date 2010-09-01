@@ -27,6 +27,7 @@ import kodkod.ast.operator.IntOperator;
 import kodkod.ast.operator.Multiplicity;
 import kodkod.ast.operator.Quantifier;
 import kodkod.instance.TupleSet;
+import kodkod.instance.Universe;
 import de.stups.probkodkod.parser.analysis.DepthFirstAdapter;
 import de.stups.probkodkod.parser.node.AAddIntexprBinop;
 import de.stups.probkodkod.parser.node.AAllQuantifier;
@@ -111,6 +112,7 @@ import de.stups.probkodkod.parser.node.PType;
 import de.stups.probkodkod.parser.node.Start;
 import de.stups.probkodkod.parser.node.TIdentifier;
 import de.stups.probkodkod.parser.node.TNumber;
+import de.stups.probkodkod.types.TupleType;
 import de.stups.probkodkod.types.Type;
 
 /**
@@ -261,8 +263,8 @@ public class KodkodAnalysis extends DepthFirstAdapter {
 		if (problem != null) {
 			final boolean signum = getSignum(node.getReqtype());
 			int size = extractInt(node.getSize());
-			final Map<String, TupleSet> args = extractArguments(node
-					.getArguments(), problem);
+			final Map<String, TupleSet> args = extractArguments(
+					node.getArguments(), problem);
 			session.request(problem, signum, args);
 			session.writeNextSolutions(problem, size);
 		}
@@ -292,13 +294,13 @@ public class KodkodAnalysis extends DepthFirstAdapter {
 	private Map<String, TupleSet> extractArguments(final List<PArgument> args,
 			final ImmutableProblem problem) {
 		final Map<String, TupleSet> result = new HashMap<String, TupleSet>();
-		final TypedTupleFactory factory = problem.getFactory();
+		final Universe universe = problem.getUniverse();
 		for (final PArgument parg : args) {
 			final AArgument arg = (AArgument) parg;
 			final String id = extractIdentifier(arg.getIdentifier());
 			final RelationInfo info = problem.lookupRelationInfo(id);
-			final TupleSet tupleSet = extractTuples(factory, info.getTypes(),
-					arg.getTuples());
+			final TupleSet tupleSet = extractTuples(universe,
+					info.getTupleType(), arg.getTuples());
 			result.put(id, tupleSet);
 		}
 		return result;
@@ -557,10 +559,25 @@ public class KodkodAnalysis extends DepthFirstAdapter {
 			final boolean isExact = isExactRelation(rel.getExtsub());
 			final boolean isSingleton = rel.getSingleton() != null;
 			final Type[] types = extractTypes(rel.getTypes());
-			final TypedTupleFactory factory = problem.getFactory();
+			checkSingletonForTypes(id, isSingleton, types);
+			final Universe universe = problem.getUniverse();
 			final PTupleset tupleset = rel.getElements();
-			final TupleSet ptset = extractTupleSet(factory, tupleset, types);
-			problem.addRelation(id, isExact, isSingleton, ptset, types);
+			final TupleType tupleType = new TupleType(types, isSingleton);
+			final TupleSet ptset = extractTupleSet(universe, tupleset,
+					tupleType);
+			problem.addRelation(id, isExact, tupleType, ptset);
+		}
+	}
+
+	private void checkSingletonForTypes(final String id,
+			final boolean isSingleton, final Type[] types) {
+		if (!isSingleton) {
+			for (final Type type : types) {
+				if (type.oneValueNeedsCompleteTupleSet())
+					throw new IllegalArgumentException("Relation " + id
+							+ " makes use of type " + type
+							+ " but is not declared as singleton");
+			}
 		}
 	}
 
@@ -599,14 +616,14 @@ public class KodkodAnalysis extends DepthFirstAdapter {
 				pow2Size);
 	}
 
-	private TupleSet extractTupleSet(final TypedTupleFactory factory,
-			final PTupleset node, final Type[] types) {
+	private TupleSet extractTupleSet(final Universe universe,
+			final PTupleset node, final TupleType tupleType) {
 		final TupleSet result;
 		if (node == null) {
-			result = factory.createTupleSet(types);
+			result = tupleType.createTupleSet(universe);
 		} else {
 			ATupleset aTupleset = (ATupleset) node;
-			result = extractTuples(factory, types, aTupleset.getTuples());
+			result = extractTuples(universe, tupleType, aTupleset.getTuples());
 		}
 		return result;
 	}
@@ -619,8 +636,16 @@ public class KodkodAnalysis extends DepthFirstAdapter {
 		return type;
 	}
 
-	private TupleSet extractTuples(final TypedTupleFactory factory,
-			final Type[] types, final Collection<PTuple> ptuples) {
+	private TupleSet extractTuples(final Universe universe,
+			final TupleType tupleType, final Collection<PTuple> ptuples) {
+		if (tupleType.isSingleton()) {
+			if (ptuples.size() != 1)
+				throw new IllegalArgumentException(
+						"singleton type expects exactly one element, but there were "
+								+ ptuples.size());
+			final ATuple tuple = (ATuple) ptuples.iterator().next();
+
+		}
 		Collection<int[]> tuples = null;
 		for (final PTuple pTuple : ptuples) {
 			final ATuple aTuple = (ATuple) pTuple;
@@ -629,7 +654,7 @@ public class KodkodAnalysis extends DepthFirstAdapter {
 			}
 			tuples.add(extractNumbers(aTuple.getNumbers()));
 		}
-		return factory.createTupleSet(types, tuples);
+		return tupleType.createTupleSet(universe, tuples);
 	}
 
 	private int[] extractNumbers(final Collection<TNumber> nodes) {

@@ -54,18 +54,18 @@ public final class ImmutableProblem {
 	// The bitwidth that the solver should use for this problem
 	private final Integer solverBitwidth;
 	// The factory is used to create tuples and tupleSets
-	private final TypedTupleFactory factory;
+	private final Universe universe;
 
 	public ImmutableProblem(final String id, final Formula formula,
-			final Integer bitwidth, final TypedTupleFactory factory,
+			final Integer bitwidth, final Universe universe,
 			final Collection<RelationInfo> infos, final int numberOffset,
 			final int[] numbers) {
 		this.id = id;
 		this.solverBitwidth = bitwidth;
-		this.factory = factory;
+		this.universe = universe;
 
 		variableInfos = new RelationInfo[countVariables(infos)];
-		preBounds = setUpBounds(factory, variableInfos, relations, infos);
+		preBounds = setUpBounds(universe, variableInfos, relations, infos);
 		registerNumbers(preBounds, numberOffset, numbers);
 
 		this.formula = addOnePredicates(formula, variableInfos);
@@ -79,11 +79,11 @@ public final class ImmutableProblem {
 		}
 	}
 
-	private static Bounds setUpBounds(final TypedTupleFactory factory,
+	private static Bounds setUpBounds(final Universe universe,
 			final RelationInfo[] variableInfos,
 			final Map<String, RelationInfo> relations,
 			final Collection<RelationInfo> infos) {
-		Bounds preBounds = new Bounds(factory.getUniverse());
+		Bounds preBounds = new Bounds(universe);
 		int indexVar = 0;
 		for (final RelationInfo relinfo : infos) {
 			final String relid = relinfo.getId();
@@ -145,10 +145,6 @@ public final class ImmutableProblem {
 		return solverBitwidth;
 	}
 
-	public TypedTupleFactory getFactory() {
-		return factory;
-	}
-
 	public RelationInfo lookupRelationInfo(final String id) {
 		final RelationInfo info = relations.get(id);
 		if (id == null)
@@ -197,6 +193,10 @@ public final class ImmutableProblem {
 			logger.info(bounds.toString());
 		}
 		return new Request(variables, iterator);
+	}
+
+	public Universe getUniverse() {
+		return universe;
 	}
 
 }

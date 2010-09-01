@@ -13,7 +13,7 @@ import kodkod.instance.Instance;
 import kodkod.instance.Tuple;
 import kodkod.instance.TupleSet;
 import de.stups.probkodkod.prolog.IPrologTermOutput;
-import de.stups.probkodkod.types.Type;
+import de.stups.probkodkod.types.TupleType;
 
 /**
  * A request stores the information about a ongoing query in the current
@@ -78,12 +78,13 @@ public final class Request {
 							.getRelation());
 					pto.openTerm("b");
 					pto.printAtom(relinfo.getId());
+					final TupleType tupleType = relinfo.getTupleType();
 					if (relinfo.isSingleton()) {
 						final Tuple tuple = tupleSet.iterator().next();
-						writeTuple(pto, tupleSet, relinfo.getTypes(), tuple);
+						writeTuple(pto, tupleType, tupleSet, tuple);
 					} else {
 						pto.openList();
-						writeTupleSet(pto, tupleSet, relinfo.getTypes());
+						writeTupleSet(pto, tupleType, tupleSet);
 						pto.closeList();
 					}
 					pto.closeTerm();
@@ -102,21 +103,17 @@ public final class Request {
 	}
 
 	private void writeTupleSet(final IPrologTermOutput pto,
-			final TupleSet tupleSet, final Type[] types) {
+			final TupleType tupleType, final TupleSet tupleSet) {
 		for (Tuple tuple : tupleSet) {
-			writeTuple(pto, tupleSet, types, tuple);
+			writeTuple(pto, tupleType, tupleSet, tuple);
 		}
 	}
 
 	private void writeTuple(final IPrologTermOutput pto,
-			final TupleSet tupleSet, final Type[] types, final Tuple tuple) {
+			final TupleType tupleType, final TupleSet tupleSet,
+			final Tuple tuple) {
 		pto.openTerm("t");
-		pto.openList();
-		final int arity = tupleSet.arity();
-		for (int index = 0; index < arity; index++) {
-			types[index].writeResult(pto, index, tuple, tupleSet);
-		}
-		pto.closeList();
+		tupleType.writeResult(pto, tuple, tupleSet);
 		pto.closeTerm();
 	}
 

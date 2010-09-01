@@ -20,6 +20,7 @@ import de.stups.probkodkod.tools.IntTools;
 import de.stups.probkodkod.types.AtomsType;
 import de.stups.probkodkod.types.IntsetType;
 import de.stups.probkodkod.types.Pow2Type;
+import de.stups.probkodkod.types.TupleType;
 import de.stups.probkodkod.types.Type;
 
 /**
@@ -43,7 +44,7 @@ public class Problem {
 	private int[] numbers;
 	private Integer bitwidth;
 
-	private TypedTupleFactory factory = null;
+	private Universe universe = null;
 	private final Collection<TypeBound> typeBounds = new ArrayList<TypeBound>();
 
 	public Problem(final String id) {
@@ -54,14 +55,14 @@ public class Problem {
 		this.formula = formula;
 	}
 
-	private void registerRelation(final String id, final Type[] types,
-			final AbstractBound bound, final boolean isSingleton) {
+	private void registerRelation(final String id, final TupleType tupleType,
+			final AbstractBound bound) {
 		if (relations.containsKey(id))
 			throw new IllegalStateException("relation '" + id
 					+ "' declared twice.");
-		final Relation relation = Relation.nary(id, types.length);
+		final Relation relation = Relation.nary(id, tupleType.getArity());
 		final RelationInfo info = new RelationInfo(id, relation, bound,
-				isSingleton, types);
+				tupleType);
 		relations.put(id, info);
 	}
 
@@ -186,8 +187,8 @@ public class Problem {
 	}
 
 	public ImmutableProblem createImmutable() {
-		return new ImmutableProblem(id, formula, bitwidth, factory, relations
-				.values(), numberOffset, numbers);
+		return new ImmutableProblem(id, formula, bitwidth, universe,
+				relations.values(), numberOffset, numbers);
 	}
 
 	public void registerType(final String id, final int size) {
@@ -202,31 +203,23 @@ public class Problem {
 		final TypeBound bound = new TypeBound(interval);
 		typeBounds.add(bound);
 		types.put(id, type);
-		final Type[] types = new Type[] { type };
-		registerRelation(id, types, bound, false);
+		final TupleType tupleType = TupleType.createTypeRelation(type);
+		registerRelation(id, tupleType, bound);
 	}
 
 	public Type lookupType(final String typeId) {
 		return types.get(typeId);
 	}
 
-	/**
-	 * @return a typed TupleFactory if called after calling
-	 *         {@link #createUniverse()}, <code>null</code> otherwise
-	 */
-	public TypedTupleFactory getFactory() {
-		return factory;
-	}
-
 	public void addRelation(final String id, final boolean isExact,
-			final boolean isSingleton, final TupleSet ptset, final Type[] types) {
+			final TupleType tupleType, final TupleSet ptset) {
 		AbstractBound bound;
 		if (isExact) {
 			bound = new ExactBound(ptset);
 		} else {
 			bound = new SubsetBound(ptset);
 		}
-		registerRelation(id, types, bound, isSingleton);
+		registerRelation(id, tupleType, bound);
 	}
 
 	/**
@@ -237,18 +230,21 @@ public class Problem {
 	 * This method should only be called once.
 	 */
 	public void createUniverse() {
-		if (factory != null)
+		if (universe != null)
 			throw new IllegalStateException("createUniverse called twice");
 		Collection<Integer> atoms = new ArrayList<Integer>(currentSize);
 		for (int i = 0; i < currentSize; i++) {
 			atoms.add(new Integer(i));
 		}
-		final Universe universe = new Universe(atoms);
-		factory = new TypedTupleFactory(universe);
+		universe = new Universe(atoms);
 
 		for (final TypeBound typeBound : typeBounds) {
 			typeBound.createTupleSets(universe);
 		}
+	}
+
+	public Universe getUniverse() {
+		return universe;
 	}
 
 }
