@@ -16,6 +16,15 @@ public class IntsetTypeTest {
 	private static final int TESTSIZE = 3;
 
 	@Test
+	public void testIsSetenabled() {
+		final int[] ints = createInts(1);
+		final Type type = new IntsetType("test", new IntegerIntervall(0, 1),
+				ints);
+		assertEquals("one tuple should be enough", false,
+				type.oneValueNeedsCompleteTupleSet());
+	}
+
+	@Test
 	public void testAllCombinations() {
 		testAllCombinations(0);
 	}

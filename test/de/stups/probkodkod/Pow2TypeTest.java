@@ -27,6 +27,15 @@ public class Pow2TypeTest {
 	private static int BITWIDTH_TEST = 4;
 
 	@Test
+	public void testTupleSetNeeded() {
+		final int[] pow2s = createPowersOfTwo(1);
+		final Type type = new Pow2Type("test", new IntegerIntervall(0, 1),
+				pow2s);
+		assertEquals("tuple set is needed expected", true,
+				type.oneValueNeedsCompleteTupleSet());
+	}
+
+	@Test
 	public void testAllDecodeEncodeWithoutOffset() {
 		testAllDecodeEncode(0);
 	}

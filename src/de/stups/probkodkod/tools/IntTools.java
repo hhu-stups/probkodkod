@@ -11,14 +11,6 @@ package de.stups.probkodkod.tools;
 public final class IntTools {
 
 	/**
-	 * @param power
-	 * @return exp(2,power)
-	 */
-	public static long pow2(final int power) {
-		return power == 0 ? 0 : 1 << (power - 1);
-	}
-
-	/**
 	 * @param maxint
 	 * @return the number of bits needed to store maxint
 	 */
