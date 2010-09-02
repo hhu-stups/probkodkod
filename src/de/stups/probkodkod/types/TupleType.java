@@ -103,7 +103,8 @@ public class TupleType {
 			final TupleSet tupleSet) {
 		pto.openList();
 		for (int i = 0; i < arity; i++) {
-			types[i].writeResult(pto, i, tuple, tupleSet);
+			final int result = types[i].decode(i, tuple, tupleSet);
+			pto.printNumber(result);
 		}
 		pto.closeList();
 	}

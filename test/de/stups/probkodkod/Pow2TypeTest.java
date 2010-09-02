@@ -4,7 +4,6 @@
 package de.stups.probkodkod;
 
 import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertTrue;
 
 import java.util.Arrays;
 
@@ -14,10 +13,8 @@ import kodkod.instance.Universe;
 
 import org.junit.Test;
 
-import de.stups.probkodkod.prolog.IntegerPrologTerm;
-import de.stups.probkodkod.prolog.PrologTerm;
-import de.stups.probkodkod.prolog.StructuredPrologOutput;
 import de.stups.probkodkod.test.KodkodUtil;
+import de.stups.probkodkod.test.Permutations;
 import de.stups.probkodkod.types.Pow2Type;
 import de.stups.probkodkod.types.Type;
 
@@ -60,22 +57,10 @@ public class Pow2TypeTest {
 		final int[] atoms = type.encode(i);
 		final TupleSet tupleSet = KodkodUtil.fetchTupleSet(factory.universe(),
 				atoms);
-		final int value = decode(type, tupleSet);
+		final int value = type.decode(0, null, tupleSet);
 		assertEquals(
 				"Result must match input for permutation "
 						+ Arrays.toString(perm), i, value);
-	}
-
-	private int decode(final Type type, final TupleSet tupleSet) {
-		final StructuredPrologOutput pto = new StructuredPrologOutput();
-		type.writeResult(pto, 0, null, tupleSet);
-		pto.fullstop();
-		assertEquals("Exactly one term expected", 1, pto.getSentences().size());
-		PrologTerm term = pto.getSentences().iterator().next();
-		assertTrue("IntegerPrologTerm expected",
-				term instanceof IntegerPrologTerm);
-		final int value = ((IntegerPrologTerm) term).getValue().intValue();
-		return value;
 	}
 
 	private int[] createPowersOfTwo(final int width) {

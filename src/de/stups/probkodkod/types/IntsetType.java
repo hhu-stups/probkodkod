@@ -9,7 +9,6 @@ import java.util.Map;
 import kodkod.instance.Tuple;
 import kodkod.instance.TupleSet;
 import de.stups.probkodkod.IntegerIntervall;
-import de.stups.probkodkod.prolog.IPrologTermOutput;
 
 /**
  * The type represents integers that can be used in sets.
@@ -30,11 +29,11 @@ public class IntsetType extends SetEnabledType {
 	}
 
 	@Override
-	public void writeResult(final IPrologTermOutput pto, final int index,
-			final Tuple tuple, final TupleSet tupleSet) {
+	public int decode(final int index, final Tuple tuple,
+			final TupleSet tupleSet) {
 		final int atomIndex = tuple.atomIndex(index);
 		final int indexInType = atomIndex - interval.getLower();
-		pto.printNumber(values[indexInType]);
+		return values[indexInType];
 	}
 
 	@Override

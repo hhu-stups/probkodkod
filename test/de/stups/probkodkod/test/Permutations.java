@@ -1,4 +1,4 @@
-package de.stups.probkodkod;
+package de.stups.probkodkod.test;
 
 import java.util.Iterator;
 import java.util.LinkedList;

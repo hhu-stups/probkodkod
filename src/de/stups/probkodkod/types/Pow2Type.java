@@ -6,7 +6,6 @@ package de.stups.probkodkod.types;
 import kodkod.instance.Tuple;
 import kodkod.instance.TupleSet;
 import de.stups.probkodkod.IntegerIntervall;
-import de.stups.probkodkod.prolog.IPrologTermOutput;
 import de.stups.probkodkod.tools.IntTools;
 
 /**
@@ -32,8 +31,8 @@ public class Pow2Type extends Type {
 	}
 
 	@Override
-	public void writeResult(final IPrologTermOutput pto, final int index,
-			final Tuple firsttuple, final TupleSet tupleSet) {
+	public int decode(final int index, final Tuple firsttuple,
+			final TupleSet tupleSet) {
 		// To print a value, we need the complete solution
 		int result = 0;
 		final int offset = interval.getLower();
@@ -41,7 +40,7 @@ public class Pow2Type extends Type {
 			final int atom = tuple.atomIndex(index);
 			result += powers[atom - offset];
 		}
-		pto.printNumber(result);
+		return result;
 	}
 
 	@Override

@@ -6,7 +6,6 @@ package de.stups.probkodkod.types;
 import kodkod.instance.Tuple;
 import kodkod.instance.TupleSet;
 import de.stups.probkodkod.IntegerIntervall;
-import de.stups.probkodkod.prolog.IPrologTermOutput;
 
 /**
  * For each registered type, an instance of this class is generated. A type
@@ -35,8 +34,6 @@ public abstract class Type {
 	/**
 	 * Writes a part of the solution to the PrologOutput
 	 * 
-	 * @param pto
-	 *            the Prolog output printer to write the result into
 	 * @param index
 	 *            the index of the value to print in the tuple. E.g. if a tuple
 	 *            of a binary relation A<->B should be printed, this method is
@@ -47,8 +44,7 @@ public abstract class Type {
 	 * @param tupleSet
 	 *            the complete solution
 	 */
-	public abstract void writeResult(IPrologTermOutput pto, int index,
-			Tuple tuple, TupleSet tupleSet);
+	public abstract int decode(int index, Tuple tuple, TupleSet tupleSet);
 
 	public abstract int[] encode(int element);
 
