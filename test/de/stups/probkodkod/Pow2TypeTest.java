@@ -6,9 +6,7 @@ package de.stups.probkodkod;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 
 import kodkod.instance.TupleFactory;
 import kodkod.instance.TupleSet;
@@ -19,6 +17,7 @@ import org.junit.Test;
 import de.stups.probkodkod.prolog.IntegerPrologTerm;
 import de.stups.probkodkod.prolog.PrologTerm;
 import de.stups.probkodkod.prolog.StructuredPrologOutput;
+import de.stups.probkodkod.test.KodkodUtil;
 import de.stups.probkodkod.types.Pow2Type;
 import de.stups.probkodkod.types.Type;
 
@@ -31,24 +30,36 @@ public class Pow2TypeTest {
 	private static int BITWIDTH_TEST = 4;
 
 	@Test
-	public void testAllDecodeEncode() {
+	public void testAllDecodeEncodeWithoutOffset() {
+		testAllDecodeEncode(0);
+	}
+
+	@Test
+	public void testAllDecodeEncodeWithOffset() {
+		testAllDecodeEncode(4);
+
+	}
+
+	public void testAllDecodeEncode(final int offset) {
 		int[] powersOf2 = createPowersOfTwo(BITWIDTH_TEST);
 		final int maxint = (1 << BITWIDTH_TEST) - 1;
-		final Universe universe = new Universe(createAtoms(BITWIDTH_TEST));
+		final Universe universe = KodkodUtil.createUniverse(offset,
+				BITWIDTH_TEST);
 		final TupleFactory factory = universe.factory();
 		for (final int[] perm : new Permutations(powersOf2)) {
 			for (int i = 0; i < maxint; i++) {
-				testDecodeEncode(factory, perm, i);
+				testDecodeEncode(offset, factory, perm, i);
 			}
 		}
 	}
 
-	private void testDecodeEncode(final TupleFactory factory, final int[] perm,
-			final int i) {
-		final Type type = new Pow2Type("test", new IntegerIntervall(0,
-				BITWIDTH_TEST - 1), perm);
+	private void testDecodeEncode(final int offset, final TupleFactory factory,
+			final int[] perm, final int i) {
+		final Type type = new Pow2Type("test", new IntegerIntervall(offset,
+				offset + BITWIDTH_TEST - 1), perm);
 		final int[] atoms = type.encode(i);
-		final TupleSet tupleSet = factory.setOf(createAtoms(atoms));
+		final TupleSet tupleSet = KodkodUtil.fetchTupleSet(factory.universe(),
+				atoms);
 		final int value = decode(type, tupleSet);
 		assertEquals(
 				"Result must match input for permutation "
@@ -65,26 +76,6 @@ public class Pow2TypeTest {
 				term instanceof IntegerPrologTerm);
 		final int value = ((IntegerPrologTerm) term).getValue().intValue();
 		return value;
-	}
-
-	private static Collection<Object> createAtoms(final int count) {
-		Collection<Object> result = new ArrayList<Object>(count);
-		for (int i = 0; i < count; i++) {
-			result.add(createAtom(i));
-		}
-		return result;
-	}
-
-	private static Object[] createAtoms(final int[] ints) {
-		Object[] result = new Object[ints.length];
-		for (int i = 0; i < ints.length; i++) {
-			result[i] = createAtom(ints[i]);
-		}
-		return result;
-	}
-
-	private static Object createAtom(final int num) {
-		return "Atom" + num;
 	}
 
 	private int[] createPowersOfTwo(final int width) {
