@@ -41,4 +41,12 @@ public class KodkodUtil {
 		return result;
 	}
 
+	public static int[] createInts(final int width) {
+		int[] result = new int[width];
+		for (int i = 0; i < width; i++) {
+			result[i] = i;
+		}
+		return result;
+	}
+
 }

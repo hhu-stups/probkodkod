@@ -1,7 +1,7 @@
 /**
  * 
  */
-package de.stups.probkodkod;
+package de.stups.probkodkod.types;
 
 import static junit.framework.Assert.assertEquals;
 
@@ -13,6 +13,7 @@ import kodkod.instance.Universe;
 
 import org.junit.Test;
 
+import de.stups.probkodkod.IntegerIntervall;
 import de.stups.probkodkod.test.KodkodUtil;
 import de.stups.probkodkod.test.Permutations;
 import de.stups.probkodkod.types.Pow2Type;
