@@ -13,14 +13,12 @@ import kodkod.instance.TupleFactory;
 import kodkod.instance.TupleSet;
 import kodkod.instance.Universe;
 import de.stups.probkodkod.IntegerIntervall;
-import de.stups.probkodkod.prolog.IPrologTermOutput;
 
 /**
  * @author plagge
  */
 public class TupleType {
 	private final Type[] types;
-	private final SetEnabledType[] setTypes;
 	private final int arity;
 	private final boolean isSingleton;
 	private final boolean mustBeSingleton;
@@ -47,7 +45,6 @@ public class TupleType {
 		this.mustBeSingleton = checkIfSingletonNeeded(types);
 		if (mustBeSingleton && !isSingleton)
 			throw new IllegalArgumentException("Must be singleton but is not");
-		this.setTypes = castToSetTypes(mustBeSingleton, types);
 
 		final List<Integer> lower = new ArrayList<Integer>(arity);
 		final List<Integer> upper = new ArrayList<Integer>(arity);
@@ -60,21 +57,6 @@ public class TupleType {
 		}
 		this.lower = Collections.unmodifiableList(lower);
 		this.upper = Collections.unmodifiableList(upper);
-	}
-
-	private static SetEnabledType[] castToSetTypes(
-			final boolean mustBeSingleton, final Type[] types) {
-		final SetEnabledType[] setTypes;
-		if (mustBeSingleton) {
-			setTypes = null;
-		} else {
-			final int arity = types.length;
-			setTypes = new SetEnabledType[arity];
-			for (int i = 0; i < arity; i++) {
-				setTypes[i] = (SetEnabledType) types[i];
-			}
-		}
-		return setTypes;
 	}
 
 	private static boolean checkIfSingletonNeeded(final Type[] types) {
@@ -99,14 +81,12 @@ public class TupleType {
 		return mustBeSingleton;
 	}
 
-	public void writeResult(final IPrologTermOutput pto, final Tuple tuple,
-			final TupleSet tupleSet) {
-		pto.openList();
+	public int[] decodeTuple(final Tuple tuple, final TupleSet tupleSet) {
+		final int[] result = new int[arity];
 		for (int i = 0; i < arity; i++) {
-			final int result = types[i].decode(i, tuple, tupleSet);
-			pto.printNumber(result);
+			result[i] = types[i].decode(i, tuple, tupleSet);
 		}
-		pto.closeList();
+		return result;
 	}
 
 	/**
@@ -117,7 +97,7 @@ public class TupleType {
 	 * 
 	 * @return a {@link TupleSet}, never <code>null</code>
 	 */
-	public TupleSet createTupleSet(final Universe universe) {
+	public TupleSet createAllTuples(final Universe universe) {
 		final TupleFactory factory = universe.factory();
 		final Tuple lowerTuple = factory.tuple(lower);
 		final Tuple upperTuple = factory.tuple(upper);
@@ -164,7 +144,8 @@ public class TupleType {
 		final Object[] atoms = new Object[arity];
 		for (int i = 0; i < arity; i++) {
 			final int element = numbers[i];
-			atoms[i] = setTypes[i].encodeElement(element);
+			final SetEnabledType setType = (SetEnabledType) types[i];
+			atoms[i] = setType.encodeElement(element);
 		}
 		return factory.tuple(atoms);
 	}

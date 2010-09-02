@@ -112,8 +112,13 @@ public final class Request {
 	private void writeTuple(final IPrologTermOutput pto,
 			final TupleType tupleType, final TupleSet tupleSet,
 			final Tuple tuple) {
+		final int[] intTuple = tupleType.decodeTuple(tuple, tupleSet);
 		pto.openTerm("t");
-		tupleType.writeResult(pto, tuple, tupleSet);
+		pto.openList();
+		for (int elem : intTuple) {
+			pto.printNumber(elem);
+		}
+		pto.closeList();
 		pto.closeTerm();
 	}
 

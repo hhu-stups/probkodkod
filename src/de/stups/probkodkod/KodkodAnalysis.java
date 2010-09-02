@@ -620,7 +620,7 @@ public class KodkodAnalysis extends DepthFirstAdapter {
 			final PTupleset node, final TupleType tupleType) {
 		final TupleSet result;
 		if (node == null) {
-			result = tupleType.createTupleSet(universe);
+			result = tupleType.createAllTuples(universe);
 		} else {
 			ATupleset aTupleset = (ATupleset) node;
 			result = extractTuples(universe, tupleType, aTupleset.getTuples());
