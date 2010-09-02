@@ -20,7 +20,7 @@ import de.stups.probkodkod.prolog.IPrologTermOutput;
  */
 public class TupleType {
 	private final Type[] types;
-	private final Type[] setTypes;
+	private final SetEnabledType[] setTypes;
 	private final int arity;
 	private final boolean isSingleton;
 	private final boolean mustBeSingleton;
@@ -44,23 +44,10 @@ public class TupleType {
 		this.arity = types.length;
 		this.isSingleton = isSingleton;
 		this.isTypeRelation = isTypeRelation;
-		boolean oneTypeNeedsSingletons = false;
-		for (final Type type : types) {
-			if (!(type instanceof SetEnabledType)) {
-				oneTypeNeedsSingletons = true;
-			}
-		}
-		this.mustBeSingleton = oneTypeNeedsSingletons;
+		this.mustBeSingleton = checkIfSingletonNeeded(types);
 		if (mustBeSingleton && !isSingleton)
 			throw new IllegalArgumentException("Must be singleton but is not");
-		if (oneTypeNeedsSingletons) {
-			setTypes = null;
-		} else {
-			setTypes = new SetEnabledType[arity];
-			for (int i = 0; i < arity; i++) {
-				setTypes[i] = types[i];
-			}
-		}
+		this.setTypes = castToSetTypes(mustBeSingleton, types);
 
 		final List<Integer> lower = new ArrayList<Integer>(arity);
 		final List<Integer> upper = new ArrayList<Integer>(arity);
@@ -73,6 +60,31 @@ public class TupleType {
 		}
 		this.lower = Collections.unmodifiableList(lower);
 		this.upper = Collections.unmodifiableList(upper);
+	}
+
+	private static SetEnabledType[] castToSetTypes(
+			final boolean mustBeSingleton, final Type[] types) {
+		final SetEnabledType[] setTypes;
+		if (mustBeSingleton) {
+			setTypes = null;
+		} else {
+			final int arity = types.length;
+			setTypes = new SetEnabledType[arity];
+			for (int i = 0; i < arity; i++) {
+				setTypes[i] = (SetEnabledType) types[i];
+			}
+		}
+		return setTypes;
+	}
+
+	private static boolean checkIfSingletonNeeded(final Type[] types) {
+		boolean oneTypeNeedsSingletons = false;
+		for (final Type type : types) {
+			if (!(type instanceof SetEnabledType)) {
+				oneTypeNeedsSingletons = true;
+			}
+		}
+		return oneTypeNeedsSingletons;
 	}
 
 	public int getArity() {
@@ -151,8 +163,7 @@ public class TupleType {
 		final Object[] atoms = new Object[arity];
 		for (int i = 0; i < arity; i++) {
 			final int element = numbers[i];
-			final SetEnabledType type = (SetEnabledType) types[i];
-			atoms[i] = type.encodeElement(element);
+			atoms[i] = setTypes[i].encodeElement(element);
 		}
 		return factory.tuple(atoms);
 	}
