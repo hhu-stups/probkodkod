@@ -122,7 +122,7 @@ public class TupleType {
 		final TupleFactory factory = universe.factory();
 		if (mustBeSingleton) {
 			final int[] numbers = numTuples.iterator().next();
-			result = createSingleton(factory, numbers);
+			result = createSingleton(universe, numbers);
 		} else {
 			result = createSet(factory, numTuples);
 		}
@@ -150,27 +150,27 @@ public class TupleType {
 		return factory.tuple(atoms);
 	}
 
-	private Collection<Tuple> createSingleton(final TupleFactory factory,
+	private Collection<Tuple> createSingleton(final Universe universe,
 			final int[] numbers) {
 		checkArity(numbers);
 		int[][] atomIndeces = createAllAtomIndices(numbers);
 		Collection<Tuple> tuples = new ArrayList<Tuple>();
 		final Object[] atoms = new Object[arity];
-		createTuples(factory, 0, atomIndeces, atoms, tuples);
+		createTuples(universe, 0, atomIndeces, atoms, tuples);
 		return tuples;
 	}
 
-	private void createTuples(final TupleFactory factory, final int pos,
+	private void createTuples(final Universe universe, final int pos,
 			final int[][] atomIndeces, final Object[] atoms,
 			final Collection<Tuple> tuples) {
 		if (pos < arity) {
 			final int[] current = atomIndeces[pos];
 			for (final int index : current) {
-				atoms[pos] = index;
-				createTuples(factory, pos + 1, atomIndeces, atoms, tuples);
+				atoms[pos] = universe.atom(index);
+				createTuples(universe, pos + 1, atomIndeces, atoms, tuples);
 			}
 		} else {
-			tuples.add(factory.tuple(atoms));
+			tuples.add(universe.factory().tuple(atoms));
 		}
 	}
 
