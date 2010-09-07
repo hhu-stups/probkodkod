@@ -2,9 +2,12 @@ package de.stups.probkodkod.types;
 
 import static junit.framework.Assert.assertEquals;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 
+import kodkod.instance.Tuple;
 import kodkod.instance.TupleSet;
 import kodkod.instance.Universe;
 
@@ -62,6 +65,37 @@ public class TupleTypeTest {
 		final int[] result = tt.decodeTuple(t1.iterator().next(), t1);
 		assertEquals("expected 1-tuple", 1, result.length);
 		assertEquals("expected input-value", 5, result[0]);
+	}
+
+	@Test
+	public void testPair() {
+		final TupleType tt = new TupleType(new Type[] { powset, atoms }, true);
+		final TupleSet t1 = createSingleton(tt, 5, 2);
+		final int[] result = tt.decodeTuple(t1.iterator().next(), t1);
+		assertEquals("expected pair", 2, result.length);
+		assertEquals("expected input-value", 5, result[0]);
+		assertEquals("expected input-value", 2, result[1]);
+	}
+
+	@Test
+	public void testRelation() {
+		final TupleType tt = new TupleType(new Type[] { intset, atoms }, false);
+		final Universe universe = createUniverse();
+		final Collection<int[]> inputSet = new ArrayList<int[]>();
+		final int[] firstInput = new int[] { 5, 2 };
+		final int[] secondInput = new int[] { 3, 1 };
+		inputSet.add(firstInput);
+		inputSet.add(secondInput);
+		final TupleSet tupleSet = tt.createTupleSet(universe, inputSet);
+		assertEquals("expected tupleSet size is 2", 2, tupleSet.size());
+		boolean foundFirst = false, foundSecond = false;
+		for (Tuple tuple : tupleSet) {
+			final int[] result = tt.decodeTuple(tuple, tupleSet);
+			foundFirst |= Arrays.equals(firstInput, result);
+			foundSecond |= Arrays.equals(secondInput, result);
+		}
+		assertEquals("expected first input", true, foundFirst);
+		assertEquals("expected second input", true, foundSecond);
 	}
 
 	private TupleSet createSingleton(final TupleType tupleType,

@@ -119,35 +119,33 @@ public class TupleType {
 			throw new IllegalArgumentException(
 					"Expected singleton set for singleton");
 		final Collection<Tuple> result;
-		final TupleFactory factory = universe.factory();
 		if (mustBeSingleton) {
 			final int[] numbers = numTuples.iterator().next();
 			result = createSingleton(universe, numbers);
 		} else {
-			result = createSet(factory, numTuples);
+			result = createSet(universe, numTuples);
 		}
-		return factory.setOf(result);
+		return universe.factory().setOf(result);
 	}
 
-	private Collection<Tuple> createSet(final TupleFactory factory,
+	private Collection<Tuple> createSet(final Universe universe,
 			final Collection<int[]> numTuples) {
 		Collection<Tuple> tuples = new ArrayList<Tuple>(numTuples.size());
 		for (int[] numbers : numTuples) {
-			tuples.add(createSetElement(factory, numbers));
+			tuples.add(createSetElement(universe, numbers));
 		}
 		return tuples;
 	}
 
-	private Tuple createSetElement(final TupleFactory factory,
-			final int[] numbers) {
+	private Tuple createSetElement(final Universe universe, final int[] numbers) {
 		checkArity(numbers);
 		final Object[] atoms = new Object[arity];
 		for (int i = 0; i < arity; i++) {
 			final int element = numbers[i];
 			final SetEnabledType setType = (SetEnabledType) types[i];
-			atoms[i] = setType.encodeElement(element);
+			atoms[i] = universe.atom(setType.encodeElement(element));
 		}
-		return factory.tuple(atoms);
+		return universe.factory().tuple(atoms);
 	}
 
 	private Collection<Tuple> createSingleton(final Universe universe,
