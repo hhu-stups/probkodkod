@@ -12,13 +12,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
+import de.prob.prolog.output.IPrologTermOutput;
+import de.prob.prolog.output.PrologTermOutput;
 import de.stups.probkodkod.parser.lexer.Lexer;
 import de.stups.probkodkod.parser.lexer.LexerException;
 import de.stups.probkodkod.parser.node.Start;
 import de.stups.probkodkod.parser.parser.Parser;
 import de.stups.probkodkod.parser.parser.ParserException;
-import de.stups.probkodkod.prolog.IPrologTermOutput;
-import de.stups.probkodkod.prolog.PrologTermOutput;
 import de.stups.probkodkod.tools.LogReader;
 import de.stups.probkodkod.tools.LogWriter;
 import de.stups.probkodkod.tools.MergeWriter;
@@ -81,8 +81,8 @@ public class KodkodInteraction {
 				out = new PrintWriter(System.out);
 			} else {
 				MergeWriter merge = new MergeWriter(fw);
-				in = new LogReader(new InputStreamReader(System.in), merge
-						.createWriter("  ProB:"));
+				in = new LogReader(new InputStreamReader(System.in),
+						merge.createWriter("  ProB:"));
 				out = new PrintWriter(new LogWriter(new OutputStreamWriter(
 						System.out), merge.createWriter("Kodkod:")));
 			}

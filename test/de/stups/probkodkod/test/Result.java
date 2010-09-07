@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import de.stups.probkodkod.prolog.PrologTerm;
+import de.prob.prolog.term.PrologTerm;
 
 public interface Result {
 

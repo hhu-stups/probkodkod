@@ -6,7 +6,7 @@ import java.util.HashSet;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import de.stups.probkodkod.prolog.PrologTerm;
+import de.prob.prolog.term.PrologTerm;
 
 public class ResultSetBuilder {
 	private final Collection<SortedMap<String, Result>> entries = new HashSet<SortedMap<String, Result>>();

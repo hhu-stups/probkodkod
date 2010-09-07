@@ -8,7 +8,7 @@ import java.util.logging.Logger;
 import kodkod.engine.Solver;
 import kodkod.engine.satlab.SATFactory;
 import kodkod.instance.TupleSet;
-import de.stups.probkodkod.prolog.IPrologTermOutput;
+import de.prob.prolog.output.IPrologTermOutput;
 
 /**
  * The session contains all the information that is needed during an interaction

@@ -16,12 +16,12 @@ import java.util.TreeMap;
 import org.junit.Before;
 import org.junit.Test;
 
+import de.prob.prolog.term.CompoundPrologTerm;
+import de.prob.prolog.term.IntegerPrologTerm;
+import de.prob.prolog.term.ListPrologTerm;
+import de.prob.prolog.term.PrologTerm;
 import de.stups.probkodkod.parser.lexer.LexerException;
 import de.stups.probkodkod.parser.parser.ParserException;
-import de.stups.probkodkod.prolog.CompoundPrologTerm;
-import de.stups.probkodkod.prolog.IntegerPrologTerm;
-import de.stups.probkodkod.prolog.ListPrologTerm;
-import de.stups.probkodkod.prolog.PrologTerm;
 import de.stups.probkodkod.test.Result;
 import de.stups.probkodkod.test.ResultSetBuilder;
 import de.stups.probkodkod.test.TestInteraction;

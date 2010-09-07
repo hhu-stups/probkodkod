@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.Collection;
 
+import de.prob.prolog.output.StructuredPrologOutput;
+import de.prob.prolog.term.PrologTerm;
 import de.stups.probkodkod.EOFLexer;
 import de.stups.probkodkod.KodkodAnalysis;
 import de.stups.probkodkod.KodkodInteraction;
@@ -16,8 +18,6 @@ import de.stups.probkodkod.parser.lexer.LexerException;
 import de.stups.probkodkod.parser.node.Start;
 import de.stups.probkodkod.parser.parser.Parser;
 import de.stups.probkodkod.parser.parser.ParserException;
-import de.stups.probkodkod.prolog.PrologTerm;
-import de.stups.probkodkod.prolog.StructuredPrologOutput;
 
 /**
  * Like {@link KodkodInteraction}, but with a one-shot parser to allow

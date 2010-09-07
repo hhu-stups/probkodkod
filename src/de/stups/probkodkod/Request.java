@@ -12,7 +12,7 @@ import kodkod.engine.Solution;
 import kodkod.instance.Instance;
 import kodkod.instance.Tuple;
 import kodkod.instance.TupleSet;
-import de.stups.probkodkod.prolog.IPrologTermOutput;
+import de.prob.prolog.output.IPrologTermOutput;
 import de.stups.probkodkod.types.TupleType;
 
 /**
