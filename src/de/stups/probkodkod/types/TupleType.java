@@ -187,4 +187,7 @@ public class TupleType {
 					+ " elements, but the relation's arity is " + arity);
 	}
 
+	public boolean isTypeRelation() {
+		return isTypeRelation;
+	}
 }

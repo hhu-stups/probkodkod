@@ -17,6 +17,7 @@ import kodkod.instance.Bounds;
 import kodkod.instance.TupleFactory;
 import kodkod.instance.TupleSet;
 import kodkod.instance.Universe;
+import de.stups.probkodkod.types.TupleType;
 
 /**
  * This is the immutable Version of a Kodkod problem description. Objects of
@@ -115,7 +116,8 @@ public final class ImmutableProblem {
 	private Formula addOnePredicates(Formula formula,
 			final RelationInfo[] variables) {
 		for (RelationInfo relinfo : variables) {
-			if (relinfo.isSingleton()) {
+			final TupleType tupleType = relinfo.getTupleType();
+			if (!tupleType.isTypeRelation() && tupleType.isSingleton()) {
 				final Formula isOne = relinfo.getRelation().one();
 				formula = isOne.and(formula);
 			}

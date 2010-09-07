@@ -67,14 +67,6 @@ public class RelationInfo {
 	}
 
 	/**
-	 * @return <code>true</code> iff the relation is declared as a singleton
-	 *         relation
-	 */
-	public boolean isSingleton() {
-		return type.isSingleton();
-	}
-
-	/**
 	 * @return the n types of this n-ary relation, never <code>null</code>, all
 	 *         elements are not <code>null</code>.
 	 */

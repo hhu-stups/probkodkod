@@ -79,7 +79,7 @@ public final class Request {
 					pto.openTerm("b");
 					pto.printAtom(relinfo.getId());
 					final TupleType tupleType = relinfo.getTupleType();
-					if (relinfo.isSingleton()) {
+					if (tupleType.isSingleton()) {
 						final Tuple tuple = tupleSet.iterator().next();
 						writeTuple(pto, tupleType, tupleSet, tuple);
 					} else {
