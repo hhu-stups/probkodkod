@@ -9,8 +9,6 @@ import org.junit.Test;
 
 import de.stups.probkodkod.IntegerIntervall;
 import de.stups.probkodkod.test.KodkodUtil;
-import de.stups.probkodkod.types.AtomsType;
-import de.stups.probkodkod.types.Type;
 
 public class AtomsTypeTest {
 	private static final int TESTSIZE = 3;
@@ -37,11 +35,14 @@ public class AtomsTypeTest {
 		final Universe universe = KodkodUtil.createUniverse(offset, TESTSIZE);
 		final IntegerIntervall interval = new IntegerIntervall(offset, offset
 				+ TESTSIZE - 1);
-		final Type type = new AtomsType("test", interval);
+		final SetEnabledType type = new AtomsType("test", interval);
 		for (final int input : ints) {
 			final int[] atoms = type.encode(input);
+			assertEquals("exactly one atom expected", 1, atoms.length);
+			final int singleAtom = type.encodeElement(input);
+			assertEquals("encodeElement must match encode", atoms[0],
+					singleAtom);
 			final TupleSet tupleSet = KodkodUtil.fetchTupleSet(universe, atoms);
-			assertEquals("exactly one atom expected", 1, tupleSet.size());
 			final Tuple tuple = tupleSet.iterator().next();
 			final int output = type.decode(0, tuple, tupleSet);
 			assertEquals("output must match input", input, output);

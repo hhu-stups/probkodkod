@@ -10,8 +10,6 @@ import org.junit.Test;
 import de.stups.probkodkod.IntegerIntervall;
 import de.stups.probkodkod.test.KodkodUtil;
 import de.stups.probkodkod.test.Permutations;
-import de.stups.probkodkod.types.IntsetType;
-import de.stups.probkodkod.types.Type;
 
 public class IntsetTypeTest {
 	private static final int TESTSIZE = 3;
@@ -47,14 +45,18 @@ public class IntsetTypeTest {
 			final Universe universe, final int[] perm) {
 		final IntegerIntervall interval = new IntegerIntervall(offset, offset
 				+ TESTSIZE - 1);
-		final Type type = new IntsetType("test", interval, perm);
+		final SetEnabledType type = new IntsetType("test", interval, perm);
 		for (final int input : perm) {
 			final int[] atoms = type.encode(input);
+			assertEquals("exactly one atom expected", 1, atoms.length);
+			final int singleAtom = type.encodeElement(input);
+			assertEquals("encodeElement should match encode", atoms[0],
+					singleAtom);
 			final TupleSet tupleSet = KodkodUtil.fetchTupleSet(universe, atoms);
-			assertEquals("exactly one atom expected", 1, tupleSet.size());
 			final Tuple tuple = tupleSet.iterator().next();
 			final int output = type.decode(0, tuple, tupleSet);
 			assertEquals("output must match input", input, output);
 		}
 	}
+
 }
