@@ -643,16 +643,16 @@ public class KodkodAnalysis extends DepthFirstAdapter {
 				throw new IllegalArgumentException(
 						"singleton type expects exactly one element, but there were "
 								+ ptuples.size());
-			final ATuple tuple = (ATuple) ptuples.iterator().next();
-
 		}
-		Collection<int[]> tuples = null;
+		final int arity = tupleType.getArity();
+		Collection<int[]> tuples = new ArrayList<int[]>();
 		for (final PTuple pTuple : ptuples) {
 			final ATuple aTuple = (ATuple) pTuple;
-			if (tuples == null) {
-				tuples = new ArrayList<int[]>();
-			}
-			tuples.add(extractNumbers(aTuple.getNumbers()));
+			final int[] numbers = extractNumbers(aTuple.getNumbers());
+			if (numbers.length != arity)
+				throw new IllegalArgumentException("expected " + arity
+						+ "-tuple, but is a " + numbers.length + "-tuple");
+			tuples.add(numbers);
 		}
 		return tupleType.createTupleSet(universe, tuples);
 	}
