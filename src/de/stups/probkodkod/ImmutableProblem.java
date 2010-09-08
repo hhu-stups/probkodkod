@@ -117,7 +117,7 @@ public final class ImmutableProblem {
 			final RelationInfo[] variables) {
 		for (RelationInfo relinfo : variables) {
 			final TupleType tupleType = relinfo.getTupleType();
-			if (!tupleType.isTypeRelation() && tupleType.isSingleton()) {
+			if (tupleType.formulaOneShouldBeAdded()) {
 				final Formula isOne = relinfo.getRelation().one();
 				formula = isOne.and(formula);
 			}

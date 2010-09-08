@@ -22,26 +22,19 @@ public class TupleType {
 	private final int arity;
 	private final boolean isSingleton;
 	private final boolean mustBeSingleton;
-	private final boolean isTypeRelation;
 
 	private final List<Integer> lower, upper;
 
 	public static TupleType createTypeRelation(final Type type) {
 		final boolean needsSingleton = !(type instanceof SetEnabledType);
 		final Type[] types = new Type[] { type };
-		return new TupleType(types, needsSingleton, true);
+		return new TupleType(types, needsSingleton);
 	}
 
 	public TupleType(final Type[] types, final boolean isSingleton) {
-		this(types, isSingleton, false);
-	}
-
-	private TupleType(final Type[] types, final boolean isSingleton,
-			final boolean isTypeRelation) {
 		this.types = types;
 		this.arity = types.length;
 		this.isSingleton = isSingleton;
-		this.isTypeRelation = isTypeRelation;
 		this.mustBeSingleton = checkIfSingletonNeeded(types);
 		if (mustBeSingleton && !isSingleton)
 			throw new IllegalArgumentException("Must be singleton but is not");
@@ -187,7 +180,18 @@ public class TupleType {
 					+ " elements, but the relation's arity is " + arity);
 	}
 
-	public boolean isTypeRelation() {
-		return isTypeRelation;
+	/**
+	 * This method states if for a relation R of this type a formula one(R)
+	 * should be added to the problem. Three conditions must hold:
+	 * 
+	 * one(R) should be added for singletons, with one exception: If the value
+	 * must be a singleton, the we omit the one(R) because a tuple set with an
+	 * arbitrary number of entries maps to a singleton tuple in the input
+	 * domain.
+	 * 
+	 * @return if one(R) should be added to the problem formula
+	 */
+	public boolean formulaOneShouldBeAdded() {
+		return isSingleton && !this.mustBeSingleton;
 	}
 }

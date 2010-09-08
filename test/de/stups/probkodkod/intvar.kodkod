@@ -2,6 +2,6 @@ problem intvar
 
 ((intrelations (si 4)))
 
-((i subset si))
+((i singleton subset si))
  
 (equals (5) (expr2int (relref i)))

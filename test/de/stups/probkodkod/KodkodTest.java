@@ -147,7 +147,7 @@ public class KodkodTest {
 	public void testIntegerVariable() throws IOException, ParserException,
 			LexerException, InterruptedException {
 		ResultSetBuilder b = new ResultSetBuilder();
-		b.set("i", t(5)).store();
+		b.single("i", t(5)).store();
 		testAll("intvar", b.toCollection());
 	}
 
