@@ -28,6 +28,7 @@ import kodkod.ast.operator.Multiplicity;
 import kodkod.ast.operator.Quantifier;
 import kodkod.instance.TupleSet;
 import kodkod.instance.Universe;
+import de.prob.prolog.output.IPrologTermOutput;
 import de.stups.probkodkod.parser.analysis.DepthFirstAdapter;
 import de.stups.probkodkod.parser.node.AAddIntexprBinop;
 import de.stups.probkodkod.parser.node.AAllQuantifier;
@@ -187,6 +188,7 @@ public class KodkodAnalysis extends DepthFirstAdapter {
 	}
 
 	private final KodkodSession session;
+	private final IPrologTermOutput pto;
 
 	private Problem problem;
 
@@ -195,8 +197,10 @@ public class KodkodAnalysis extends DepthFirstAdapter {
 	private final Stack<IntExpression> intExpressionStack = new Stack<IntExpression>();
 	private Map<String, Variable> variables = new HashMap<String, Variable>();
 
-	public KodkodAnalysis(final KodkodSession session) {
+	public KodkodAnalysis(final KodkodSession session,
+			final IPrologTermOutput pto) {
 		this.session = session;
+		this.pto = pto;
 	}
 
 	@Override
@@ -266,7 +270,9 @@ public class KodkodAnalysis extends DepthFirstAdapter {
 			final Map<String, TupleSet> args = extractArguments(
 					node.getArguments(), problem);
 			session.request(problem, signum, args);
-			session.writeNextSolutions(problem, size);
+			session.writeNextSolutions(problem, size, pto);
+		} else {
+			pto.openTerm("unknown").printAtom(problemId).closeTerm().fullstop();
 		}
 	}
 
@@ -279,7 +285,7 @@ public class KodkodAnalysis extends DepthFirstAdapter {
 		final ImmutableProblem problem = session.getProblem(id);
 		if (problem != null) {
 			final int size = extractInt(node.getSize());
-			session.writeNextSolutions(problem, size);
+			session.writeNextSolutions(problem, size, pto);
 		}
 	}
 

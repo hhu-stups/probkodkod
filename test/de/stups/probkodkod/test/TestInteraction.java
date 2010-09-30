@@ -32,8 +32,8 @@ public class TestInteraction {
 
 	public TestInteraction() {
 		this.pto = new StructuredPrologOutput();
-		this.session = new KodkodSession(pto);
-		this.analysis = new KodkodAnalysis(session);
+		this.session = new KodkodSession();
+		this.analysis = new KodkodAnalysis(session, pto);
 	}
 
 	public PrologTerm sendMessage(final String msg) throws ParserException,

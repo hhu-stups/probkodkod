@@ -23,15 +23,10 @@ import de.prob.prolog.output.IPrologTermOutput;
 public class KodkodSession {
 	private final Logger logger = Logger.getLogger(KodkodSession.class
 			.getName());
-	private final IPrologTermOutput out;
 	private final Map<String, ImmutableProblem> problems = new HashMap<String, ImmutableProblem>();
 	private final Map<ImmutableProblem, Solver> solvers = new HashMap<ImmutableProblem, Solver>();
 	private final Map<ImmutableProblem, Request> currentRequests = new HashMap<ImmutableProblem, Request>();
 	private boolean stopped = false;
-
-	public KodkodSession(final IPrologTermOutput out) {
-		this.out = out;
-	}
 
 	public void addProblem(final ImmutableProblem problem) {
 		String id = problem.getId();
@@ -65,21 +60,17 @@ public class KodkodSession {
 	}
 
 	public ImmutableProblem getProblem(final String problemId) {
-		ImmutableProblem problem = problems.get(problemId);
-		if (problem == null) {
-			out.openTerm("unknown").printAtom(problemId).closeTerm().fullstop();
-		}
-		return problem;
+		return problems.get(problemId);
 	}
 
 	public boolean writeNextSolutions(final ImmutableProblem problem,
-			final int size) {
+			final int size, final IPrologTermOutput pto) {
 		Request request = currentRequests.get(problem);
 		if (request == null)
 			throw new IllegalArgumentException("No request for "
 					+ problem.getId());
 		info(problem, "list max " + size + " solutions");
-		boolean hasSolutions = request.writeNextSolutions(out, size);
+		boolean hasSolutions = request.writeNextSolutions(pto, size);
 		if (!hasSolutions) {
 			currentRequests.remove(problem);
 			info(problem, "no more solutions, request deleted");

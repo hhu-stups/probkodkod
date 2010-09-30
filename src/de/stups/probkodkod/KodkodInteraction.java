@@ -43,8 +43,8 @@ public class KodkodInteraction {
 		logger.info("Starting kodkod session");
 
 		IPrologTermOutput pto = new PrologTermOutput(out);
-		session = new KodkodSession(pto);
-		KodkodAnalysis analysis = new KodkodAnalysis(session);
+		session = new KodkodSession();
+		KodkodAnalysis analysis = new KodkodAnalysis(session, pto);
 		Lexer lexer = new EOFLexer(in);
 		Parser parser = new Parser(lexer);
 
