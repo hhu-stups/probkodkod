@@ -6,10 +6,14 @@
 	<property name="build" value="build"/>
 	<property name="parser" value="parser"/>
 	<property name="jar" value="${build}/jar"/>
+	<property name="testbin" value="${build}/testbin"/>
 	<property name="main.class" value="de.stups.probkodkod.KodkodInteraction"/>
 	<property name="lib" value="lib"/>
 	<property name="kodkod" value="${lib}/kodkod.jar"/>
+	<property name="prolog" value="${lib}/prolog.jar"/>
+	<property name="junit" value="${lib}/junit-4.8.2.jar"/>
 	<property name="uptodate" value="uptodate"/>
+	<property name="testresultdir" value="${build}/testresult"/>
 	
 	<taskdef name="sablecc" classname="org.sablecc.ant.taskdef.Sablecc"/>
 	
@@ -37,6 +41,7 @@
 		<javac srcdir="${parser}" destdir="${jar}" debug="true"/>
 		<javac srcdir="${src}" destdir="${jar}" debug="true">
 			<classpath location="${kodkod}"/>
+			<classpath location="${prolog}"/>
 		</javac>
 		<copy todir="${jar}">
 			<fileset dir="${parser}">
@@ -44,6 +49,37 @@
 				<exclude name="${uptodate}"/>
 			</fileset>
 		</copy>
+	</target>
+	
+	<target name="compiletests" depends="compile">
+		<mkdir dir="${testbin}"/>
+		<javac srcdir="${test}" destdir="${testbin}" debug="true">
+			<classpath location="${kodkod}"/>
+			<classpath location="${prolog}"/>
+			<classpath location="${junit}"/>
+			<classpath location="${jar}"/>
+		</javac>
+		<copy todir="${testbin}">
+			<fileset dir="${test}">
+				<exclude name="**/*.java"/>
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="test" depends="compiletests" description="Test">
+		<mkdir dir="${testresultdir}"/>
+		<junit haltonerror="true" fork="true">
+			<classpath location="${testbin}"/>
+			<classpath location="${kodkod}"/>
+			<classpath location="${prolog}"/>
+			<classpath location="${junit}"/>
+			<classpath location="${jar}"/>
+			<jvmarg value="-Djava.library.path=${lib}"/>
+			<formatter type="plain" usefile="true" />
+			<batchtest todir="${testresultdir}">
+				<fileset dir="${testbin}" includes="**/*Test.class"/>
+			</batchtest>
+		</junit>
 	</target>
 	
 	<target name="manifest" depends="init">
@@ -54,7 +90,7 @@
 		</manifest>
 	</target>
 	
-	<target name="jar" depends="clear,compile,manifest" description="Build the jar file">
+	<target name="jar" depends="clear,test,manifest" description="Build the jar file">
 		<jar destfile="${build}/probkodkod.jar"
 		     basedir="${jar}"
 			 manifest="${build}/MANIFEST.MF"
