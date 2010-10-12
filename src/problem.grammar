@@ -74,11 +74,6 @@ Tokens
   keyword_int2intset = 'int2intset';
   keyword_expr2int = 'expr2int';
   
-  keyword_pow2 = 'pow2';
-  keyword_intset = 'intset';
-
-  keyword_integer = 'int';
-  
   minus = '-';
   
   identifier = alpha+ digit*;
