@@ -1,6 +1,6 @@
 problem integers
 
-((intrelations (si 2))
+((inttype (si 2))
  (w 2))
 
  ((x exact  w (<0>))

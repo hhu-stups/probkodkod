@@ -21,7 +21,7 @@ Tokens
   keyword_problem = 'problem';
   keyword_exact = 'exact';
   keyword_subset = 'subset';
-  keyword_ints = 'intrelations';
+  keyword_ints = 'inttype';
   keyword_singleton = 'singleton';
   
   keyword_true = 'true';
@@ -105,8 +105,8 @@ Productions
     | {neg} minus number;
     
   type = 
-      {standard}    [ol]:parenl [id]:identifier [size]:number [or]:parenr
-    | {intrelation} [ol]:parenl keyword_ints [pow2]:powpart [intatoms]:bitpart? [rl]:parenr;
+      {standard} [ol]:parenl [id]:identifier [size]:number [or]:parenr
+    | {ints}     [ol]:parenl keyword_ints [pow2]:powpart [intatoms]:bitpart? [rl]:parenr;
     
   powpart = [ol]:parenl [id]:identifier [num]:number [or]:parenr;
   bitpart = [ol]:parenl [id]:identifier [lower]:number [upper]:number [or]:parenr;

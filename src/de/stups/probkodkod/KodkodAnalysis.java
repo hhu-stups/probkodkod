@@ -62,7 +62,7 @@ import de.stups.probkodkod.parser.node.AImpliesLogopBinary;
 import de.stups.probkodkod.parser.node.AInLogopRel;
 import de.stups.probkodkod.parser.node.AIntInnerformula;
 import de.stups.probkodkod.parser.node.AInterExprBinop;
-import de.stups.probkodkod.parser.node.AIntrelationType;
+import de.stups.probkodkod.parser.node.AIntsType;
 import de.stups.probkodkod.parser.node.AIntsetExprCast;
 import de.stups.probkodkod.parser.node.AJoinExprBinop;
 import de.stups.probkodkod.parser.node.ALesserIntCompOp;
@@ -238,8 +238,8 @@ public class KodkodAnalysis extends DepthFirstAdapter {
 				final String id = extractIdentifier(type.getId());
 				final int size = extractInt(type.getSize());
 				problem.registerType(id, size);
-			} else if (ptype instanceof AIntrelationType) {
-				final AIntrelationType type = (AIntrelationType) ptype;
+			} else if (ptype instanceof AIntsType) {
+				final AIntsType type = (AIntsType) ptype;
 				addIntegerType(type);
 			} else
 				throw new IllegalStateException("unexpected type case "
@@ -600,7 +600,7 @@ public class KodkodAnalysis extends DepthFirstAdapter {
 		return result;
 	}
 
-	private void addIntegerType(final AIntrelationType relnode) {
+	private void addIntegerType(final AIntsType relnode) {
 		final APowpart pow2spec = (APowpart) relnode.getPow2();
 		final ABitpart bitsspec = (ABitpart) relnode.getIntatoms();
 		final String pow2Name = extractIdentifier(pow2spec.getId());
