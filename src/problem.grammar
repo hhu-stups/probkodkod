@@ -103,7 +103,7 @@ Productions
       {standard} [ol]:parenl [id]:identifier [size]:number [or]:parenr
     | {ints}     [ol]:parenl keyword_ints [pow2]:powpart [intatoms]:bitpart? [rl]:parenr;
     
-  powpart = [ol]:parenl [id]:identifier [num]:number [or]:parenr;
+  powpart = [ol]:parenl [id]:identifier [lower]:number [upper]:number [or]:parenr;
   bitpart = [ol]:parenl [id]:identifier [lower]:number [upper]:number [or]:parenr;
   
   relation = [ol]:parenl [id]:identifier [singleton]:keyword_singleton? [extsub]:reltype [types]:identifier+ [elements]:tupleset? [or]:parenr;

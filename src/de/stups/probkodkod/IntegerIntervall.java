@@ -12,6 +12,9 @@ public class IntegerIntervall {
 	private final int lower, upper;
 
 	public IntegerIntervall(final int lower, final int upper) {
+		if (lower > upper)
+			throw new IllegalArgumentException(
+					"lower bound should be <= upper bound");
 		this.lower = lower;
 		this.upper = upper;
 	}

@@ -1,6 +1,6 @@
 problem integercast
 
-((inttype (si 4) (ai 0 9)))
+((inttype (si 0 7) (ai 0 9)))
 
  ((x subset ai)
   (y subset ai))

@@ -1,6 +1,6 @@
 problem intvar
 
-((inttype (si 4)))
+((inttype (si 0 7)))
 
 ((i singleton subset si))
  

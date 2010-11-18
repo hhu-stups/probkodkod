@@ -604,7 +604,9 @@ public class KodkodAnalysis extends DepthFirstAdapter {
 		final APowpart pow2spec = (APowpart) relnode.getPow2();
 		final ABitpart bitsspec = (ABitpart) relnode.getIntatoms();
 		final String pow2Name = extractIdentifier(pow2spec.getId());
-		final int pow2Size = extractInt(pow2spec.getNum());
+		final IntegerIntervall pow2Interval = new IntegerIntervall(
+				extractInt(pow2spec.getLower()),
+				extractInt(pow2spec.getUpper()));
 		final String bitsName;
 		final IntegerIntervall intsetInterval;
 
@@ -619,7 +621,7 @@ public class KodkodAnalysis extends DepthFirstAdapter {
 		}
 
 		problem.registerIntegerTypes(pow2Name, bitsName, intsetInterval,
-				pow2Size);
+				pow2Interval);
 	}
 
 	private TupleSet extractTupleSet(final Universe universe,

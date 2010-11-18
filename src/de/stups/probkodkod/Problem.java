@@ -74,10 +74,10 @@ public class Problem {
 	 */
 	public void registerIntegerTypes(final String pow2id,
 			final String intsetId, final IntegerIntervall intset,
-			final int maxPow2) {
+			final IntegerIntervall pow2range) {
 		checkIntsetArgs(intset);
 
-		final int bitsForPows = maxPow2;
+		final int bitsForPows = calculateBitsForPows(pow2range);
 		final int bitsForAtoms = calculateBitsForAtoms(intset, bitsForPows);
 		final int totalBits = bitsForAtoms + bitsForPows;
 		final int pow2start = currentSize + bitsForAtoms;
@@ -92,6 +92,13 @@ public class Problem {
 		bitwidth = pow2Interval != null ? pow2Interval.getSize() + 1 : null;
 
 		currentSize += totalBits;
+	}
+
+	private int calculateBitsForPows(final IntegerIntervall pow2range) {
+		final int a = Math.abs(pow2range.getLower());
+		final int b = Math.abs(pow2range.getUpper());
+		final int maxint = Math.max(a, b);
+		return IntTools.bitwidth(maxint) + 1;
 	}
 
 	private IntegerIntervall registerPow2(final String pow2id,
