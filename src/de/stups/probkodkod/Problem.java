@@ -121,8 +121,9 @@ public class Problem {
 	private void registerIntset(final String intsetId,
 			final IntegerIntervall intset, final int bitsForAtoms) {
 		if (intset != null) {
+			final int neededAtoms = intset.getUpper() - intset.getLower() + 1;
 			final IntegerIntervall interval = new IntegerIntervall(currentSize,
-					currentSize + bitsForAtoms - 1);
+					currentSize + neededAtoms - 1);
 			Type type = new IntsetType(intsetId, interval, numbers);
 			registerType(intsetId, type, interval);
 		}
@@ -136,8 +137,7 @@ public class Problem {
 		} else {
 			final int minAtom = intset.getLower();
 			final int maxAtom = intset.getUpper();
-			final int bitwidth = intset == null ? 0 : IntTools
-					.bitwidth(maxAtom);
+			final int bitwidth = IntTools.bitwidth(maxAtom);
 			bitsForAtoms = (maxAtom - minAtom + 1) - bitwidth;
 
 			if (bitwidth > bitsForPows)

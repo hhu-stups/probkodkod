@@ -1,0 +1,12 @@
+problem intrange
+
+((inttype (p2i 0 8) (is 0 8)))
+ 
+((r subset is))
+
+(equals 
+  (relref r)
+  (comp ((v 1 one(relref is)))
+    (and 
+      (lte (1)                    (expr2int(varref v)))
+      (lte (expr2int(varref v)) (8)))))

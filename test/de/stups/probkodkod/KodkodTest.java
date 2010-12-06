@@ -151,6 +151,14 @@ public class KodkodTest {
 		testAll("intvar", b.toCollection());
 	}
 
+	@Test
+	public void testIntegerRange() throws IOException, ParserException,
+			LexerException, InterruptedException {
+		ResultSetBuilder b = new ResultSetBuilder();
+		b.set("r", t(1), t(2), t(3), t(4), t(5), t(6), t(7), t(8)).store();
+		testAll("intrange", b.toCollection());
+	}
+
 	private void testAll(final String name,
 			final Collection<SortedMap<String, Result>> expected)
 			throws IOException, ParserException, LexerException,
