@@ -76,7 +76,7 @@ Tokens
   
   minus = '-';
   
-  identifier = alpha+ digit*;
+  identifier = (alpha|digit)+;
   
   fullstop = '.';
 
