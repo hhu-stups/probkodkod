@@ -93,8 +93,10 @@
 	<target name="jar" depends="clear,test,manifest" description="Build the jar file">
 		<jar destfile="${build}/probkodkod.jar"
 		     basedir="${jar}"
-			 manifest="${build}/MANIFEST.MF"
-		/>
+			 manifest="${build}/MANIFEST.MF">
+			<zipfileset src="${kodkod}"/>
+			<zipfileset src="${prolog}"/>
+		</jar>
 	</target>
 	
 	<target name="tar" depends="jar" description="Build a tar file with all needed files">
