@@ -50,6 +50,7 @@ Tokens
   keyword_closure = 'closure';
   keyword_comprehension = 'comp'; 
   keyword_empty = 'empty';
+  keyword_iden = 'iden';
   keyword_ranges = 'ranges';
   keyword_ext = 'ext';
   keyword_relref = 'relref';
@@ -161,7 +162,9 @@ Productions
     | {cast}   expr_cast intexpression;
 
   expr_cast = {pow2} keyword_int2pow2 | {intset} keyword_int2intset; 
-  expr_const = {empty} keyword_empty;
+  expr_const =
+      {empty} keyword_empty
+    | {iden}  keyword_iden;
 
   expr_binop =
       {union}     keyword_union
