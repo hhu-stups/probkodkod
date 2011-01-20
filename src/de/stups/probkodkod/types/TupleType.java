@@ -194,4 +194,21 @@ public class TupleType {
 	public boolean formulaOneShouldBeAdded() {
 		return isSingleton && !this.mustBeSingleton;
 	}
+
+	@Override
+	public String toString() {
+		final StringBuilder sb = new StringBuilder();
+		sb.append(isSingleton ? "singleton" : "multi");
+		sb.append("Type(");
+		boolean first = true;
+		for (final Type type : types) {
+			if (!first) {
+				sb.append(',');
+			}
+			sb.append(type);
+			first = false;
+		}
+		sb.append(')');
+		return sb.toString();
+	}
 }

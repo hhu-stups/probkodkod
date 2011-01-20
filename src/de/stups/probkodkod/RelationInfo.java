@@ -87,4 +87,9 @@ public class RelationInfo {
 		bound.setBound(relation, bounds);
 	}
 
+	@Override
+	public String toString() {
+		return "RelInfo(" + id + "(" + type + ")";
+	}
+
 }
