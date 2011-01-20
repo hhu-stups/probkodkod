@@ -70,6 +70,7 @@ import de.stups.probkodkod.parser.node.ALesserIntCompOp;
 import de.stups.probkodkod.parser.node.ALesserequalIntCompOp;
 import de.stups.probkodkod.parser.node.AList;
 import de.stups.probkodkod.parser.node.ALoneMultiplicity;
+import de.stups.probkodkod.parser.node.AMulIntexprBinop;
 import de.stups.probkodkod.parser.node.AMultInnerformula;
 import de.stups.probkodkod.parser.node.ANoMultiplicity;
 import de.stups.probkodkod.parser.node.ANotInnerformula;
@@ -176,6 +177,8 @@ public class KodkodAnalysis extends DepthFirstAdapter {
 
 		BININTEXPROPS.put(AAddIntexprBinop.class.getName(), IntOperator.PLUS);
 		BININTEXPROPS.put(ASubIntexprBinop.class.getName(), IntOperator.MINUS);
+		BININTEXPROPS.put(AMulIntexprBinop.class.getName(),
+				IntOperator.MULTIPLY);
 
 		BININTCOMPS.put(AEqualsIntCompOp.class.getName(), IntCompOperator.EQ);
 		BININTCOMPS.put(AGreaterIntCompOp.class.getName(), IntCompOperator.GT);
