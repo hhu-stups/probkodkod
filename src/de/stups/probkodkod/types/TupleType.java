@@ -118,7 +118,13 @@ public class TupleType {
 		} else {
 			result = createSet(universe, numTuples);
 		}
-		return universe.factory().setOf(result);
+		final TupleSet tupleSet;
+		if (result.isEmpty()) {
+			tupleSet = universe.factory().noneOf(arity);
+		} else {
+			tupleSet = universe.factory().setOf(result);
+		}
+		return tupleSet;
 	}
 
 	private Collection<Tuple> createSet(final Universe universe,

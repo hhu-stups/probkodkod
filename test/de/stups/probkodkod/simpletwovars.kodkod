@@ -1,0 +1,8 @@
+problem simpletwovars
+
+ ((T 2))
+
+ ((x      subset T)
+  (y      subset T))
+
+ (equals (relref x) (relref y))
