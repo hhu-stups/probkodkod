@@ -49,6 +49,7 @@ Tokens
   keyword_overwrite = 'overwrite';
   keyword_transpose = 'transpose';
   keyword_closure = 'closure';
+  keyword_reflexive_closure = 'reflexive_closure';
   keyword_comprehension = 'comp'; 
   keyword_empty = 'empty';
   keyword_iden = 'iden';
@@ -179,7 +180,8 @@ Productions
     
   expr_unop =
       {transpose} keyword_transpose
-    | {closure}   keyword_closure;
+    | {closure}   keyword_closure
+    | {reflcls}   keyword_reflexive_closure;
 
   intexpression = parenl innerintexpression parenr;
   innerintexpression =

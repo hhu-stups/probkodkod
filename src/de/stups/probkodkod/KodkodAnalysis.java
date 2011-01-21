@@ -86,6 +86,7 @@ import de.stups.probkodkod.parser.node.APrjInnerexpression;
 import de.stups.probkodkod.parser.node.AProblem;
 import de.stups.probkodkod.parser.node.AProductExprBinop;
 import de.stups.probkodkod.parser.node.AQuantInnerformula;
+import de.stups.probkodkod.parser.node.AReflclsExprUnop;
 import de.stups.probkodkod.parser.node.ARelInnerformula;
 import de.stups.probkodkod.parser.node.ARelation;
 import de.stups.probkodkod.parser.node.ARelrefInnerexpression;
@@ -164,6 +165,8 @@ public class KodkodAnalysis extends DepthFirstAdapter {
 		BINEXPROPS.put(AOverwriteExprBinop.class.getName(),
 				ExprOperator.OVERRIDE);
 		UNEXPROPS.put(AClosureExprUnop.class.getName(), ExprOperator.CLOSURE);
+		UNEXPROPS.put(AReflclsExprUnop.class.getName(),
+				ExprOperator.REFLEXIVE_CLOSURE);
 		UNEXPROPS.put(ATransposeExprUnop.class.getName(),
 				ExprOperator.TRANSPOSE);
 		MULTIPLICITIES
