@@ -38,6 +38,7 @@ Tokens
   keyword_or = 'or';
   keyword_implies = 'implies';
   keyword_iff = 'iff';
+  keyword_if = 'if';
   keyword_all = 'all';
   keyword_exists = 'exists';
   keyword_union = 'union';
@@ -160,7 +161,8 @@ Productions
     | {varref} keyword_varref identifier
     | {comp}   keyword_comprehension parenl decls parenr formula
     | {prj}    keyword_projection parenl [numbers]:number+ parenr expression
-    | {cast}   expr_cast intexpression;
+    | {cast}   expr_cast intexpression
+    | {if}     keyword_if [condition]:formula [then]:expression [else]:expression;
 
   expr_cast = {pow2} keyword_int2pow2 | {intset} keyword_int2intset; 
   expr_const =

@@ -58,6 +58,7 @@ import de.stups.probkodkod.parser.node.AFuncInnerformula;
 import de.stups.probkodkod.parser.node.AGreaterIntCompOp;
 import de.stups.probkodkod.parser.node.AGreaterequalIntCompOp;
 import de.stups.probkodkod.parser.node.AIdenExprConst;
+import de.stups.probkodkod.parser.node.AIfInnerexpression;
 import de.stups.probkodkod.parser.node.AIffLogopBinary;
 import de.stups.probkodkod.parser.node.AImpliesLogopBinary;
 import de.stups.probkodkod.parser.node.AInLogopRel;
@@ -493,6 +494,14 @@ public class KodkodAnalysis extends DepthFirstAdapter {
 			throw new IllegalStateException("Unexpected integer cast operator "
 					+ castName);
 		expressionStack.push(integer.cast(op));
+	}
+
+	@Override
+	public void outAIfInnerexpression(final AIfInnerexpression node) {
+		final Expression elseExpr = expressionStack.pop();
+		final Expression thenExpr = expressionStack.pop();
+		final Formula condition = formulaStack.pop();
+		expressionStack.push(condition.thenElse(thenExpr, elseExpr));
 	}
 
 	@Override
