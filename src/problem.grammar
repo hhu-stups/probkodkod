@@ -80,7 +80,7 @@ Tokens
   
   minus = '-';
   
-  identifier = (alpha|digit)+;
+  identifier = (alpha|digit|'_')+;
   
   fullstop = '.';
 
