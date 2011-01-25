@@ -126,7 +126,8 @@ Productions
       {const}   log_const
     | {mult}    multiplicity expression
     | {rel}     logop_rel [a]:expression [b]:expression 
-    | {not}     keyword_not  formula
+    | {not}     keyword_not formula
+    | {and}     keyword_and formula* 
     | {binary}  logop_binary [a]:formula [b]:formula
     | {quant}   quantifier parenl decls parenr formula
     | {int}     int_comp_op [a]:intexpression [b]:intexpression
@@ -135,7 +136,7 @@ Productions
   log_const = {true} keyword_true | {false} keyword_false;
   logop_rel = {in} keyword_in | {equals} keyword_equals;
   logop_function = {total} keyword_total_function | {partial} keyword_partial_function;
-  logop_binary = {and} keyword_and | {or} keyword_or | {implies} keyword_implies | {iff} keyword_iff;
+  logop_binary = {or} keyword_or | {implies} keyword_implies | {iff} keyword_iff;
   quantifier = {all} keyword_all | {exists} keyword_exists;
   decls = {nil} | {cons} parenl [id]:identifier [arity]:number multiplicity expression parenr decls;
   

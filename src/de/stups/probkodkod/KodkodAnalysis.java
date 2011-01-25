@@ -32,7 +32,7 @@ import de.prob.prolog.output.IPrologTermOutput;
 import de.stups.probkodkod.parser.analysis.DepthFirstAdapter;
 import de.stups.probkodkod.parser.node.AAddIntexprBinop;
 import de.stups.probkodkod.parser.node.AAllQuantifier;
-import de.stups.probkodkod.parser.node.AAndLogopBinary;
+import de.stups.probkodkod.parser.node.AAndInnerformula;
 import de.stups.probkodkod.parser.node.AArgument;
 import de.stups.probkodkod.parser.node.ABinaryInnerexpression;
 import de.stups.probkodkod.parser.node.ABinaryInnerformula;
@@ -107,6 +107,7 @@ import de.stups.probkodkod.parser.node.AUnionExprBinop;
 import de.stups.probkodkod.parser.node.AVarrefInnerexpression;
 import de.stups.probkodkod.parser.node.PArgument;
 import de.stups.probkodkod.parser.node.PDecls;
+import de.stups.probkodkod.parser.node.PFormula;
 import de.stups.probkodkod.parser.node.PLogopFunction;
 import de.stups.probkodkod.parser.node.PRelation;
 import de.stups.probkodkod.parser.node.PReltype;
@@ -148,7 +149,6 @@ public class KodkodAnalysis extends DepthFirstAdapter {
 		CONSTFORM.put(ATrueLogConst.class.getName(), Formula.TRUE);
 		COMPOPS.put(AInLogopRel.class.getName(), ExprCompOperator.SUBSET);
 		COMPOPS.put(AEqualsLogopRel.class.getName(), ExprCompOperator.EQUALS);
-		BINFORMOPS.put(AAndLogopBinary.class.getName(), FormulaOperator.AND);
 		BINFORMOPS.put(AOrLogopBinary.class.getName(), FormulaOperator.OR);
 		BINFORMOPS.put(AImpliesLogopBinary.class.getName(),
 				FormulaOperator.IMPLIES);
@@ -354,6 +354,27 @@ public class KodkodAnalysis extends DepthFirstAdapter {
 	@Override
 	public void outANotInnerformula(final ANotInnerformula node) {
 		formulaStack.push(formulaStack.pop().not());
+	}
+
+	@Override
+	public void caseAAndInnerformula(final AAndInnerformula node) {
+		final Collection<PFormula> nodes = node.getFormula();
+		int size = nodes.size();
+		if (nodes.isEmpty()) {
+			formulaStack.push(Formula.TRUE);
+		} else if (size == 1) {
+			// just put the inner formula onto the stack
+			nodes.iterator().next().apply(this);
+		} else {
+			final Formula[] formulas = new Formula[size];
+			int pos = 0;
+			for (final PFormula sub : nodes) {
+				sub.apply(this);
+				formulas[pos] = formulaStack.pop();
+				pos++;
+			}
+			formulaStack.push(Formula.and(formulas));
+		}
 	}
 
 	@Override

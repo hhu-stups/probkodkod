@@ -8,23 +8,12 @@ problem functions
   (tf subset d r))
   
  (and
-   (and
-     (pfunc (relref pf) (relref d) (relref r))
-     (func (relref tf) (relref d) (relref r)))
-   (and
-     (and
-       (equals
-         (relref r)
-         (join
-           (relref d)
-           (relref tf)))
-       (in
-         (relref pf)
-         (relref tf)))
-     (in
-       (relref y)
-       (join
-         (relref x)
-         (relref pf)))))
-
-   
+   (pfunc (relref pf) (relref d) (relref r))
+   (func (relref tf) (relref d) (relref r))
+   (equals
+     (relref r)
+     (join (relref d) (relref tf)))
+   (in (relref pf) (relref tf))
+   (in
+     (relref y)
+     (join (relref x) (relref pf))))

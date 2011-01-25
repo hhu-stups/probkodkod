@@ -7,9 +7,8 @@ problem loop
   (lentry singleton subset Blocks))
 
  (and
-   (and
-     (in (relref lentry) (relref L))
-     (in (join (transpose (relref succs)) (difference (relref L) (relref lentry))) (relref L)))
+   (in (relref lentry) (relref L))
+   (in (join (transpose (relref succs)) (difference (relref L) (relref lentry))) (relref L))
    (all ((l 1 one (relref L)))
      (in
        (relref lentry)
