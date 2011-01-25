@@ -2,14 +2,13 @@ package de.stups.probkodkod;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
@@ -68,81 +67,89 @@ public class InteractionTestBase {
 		return buf.toString().replace('\n', ' ');
 	}
 
-	protected void testAll(final String name, final Collection<SortedMap<String, Result>> expected) throws IOException,
-			ParserException, LexerException, InterruptedException {
-				List<SortedMap<String, Result>> solutions = new LinkedList<SortedMap<String, Result>>();
-			
-				String problem = load(name + ".kodkod");
-				// debugOutput(problem);
-				sendMessage(problem + ".");
-				sendMessage("request " + name + " 100 pos ().");
-				getSolutions(false, solutions);
-				checkSolutions(expected, solutions);
-			}
+	protected void testAll(final String name,
+			final Collection<SortedMap<String, Result>> expected)
+			throws IOException, ParserException, LexerException,
+			InterruptedException {
+		List<SortedMap<String, Result>> solutions = new LinkedList<SortedMap<String, Result>>();
 
-	protected static PrologTerm t(final int... elems) {
-		return createIntTuple("t", elems);
+		String problem = load(name + ".kodkod");
+		// debugOutput(problem);
+		sendMessage(problem + ".");
+		sendMessage("request " + name + " 100 pos ().");
+		getSolutions(false, solutions);
+		checkSolutions(expected, solutions);
 	}
 
-	private static PrologTerm createIntTuple(final String functor, final int... elems) {
+	protected static PrologTerm t(final int... elems) {
+		return createIntTuple(elems);
+	}
+
+	private static PrologTerm createIntTuple(final int... elems) {
 		PrologTerm[] pelems = new PrologTerm[elems.length];
 		for (int i = 0; i < elems.length; i++) {
 			pelems[i] = new IntegerPrologTerm(elems[i]);
 		}
-		PrologTerm tuple = new ListPrologTerm(pelems);
-		return new CompoundPrologTerm(functor, tuple);
+		return new ListPrologTerm(pelems);
 	}
 
 	public InteractionTestBase() {
 		super();
 	}
 
-	protected void checkSolutions(final Collection<SortedMap<String, Result>> expected, final Collection<SortedMap<String, Result>> result)
+	protected void checkSolutions(
+			final Collection<SortedMap<String, Result>> expected,
+			final Collection<SortedMap<String, Result>> result)
 			throws IOException, ParserException, LexerException {
-				assertEquals(expected.size(), result.size());
-				Set<SortedMap<String, Result>> a = new HashSet<SortedMap<String, Result>>();
-				Set<SortedMap<String, Result>> b = new HashSet<SortedMap<String, Result>>();
-				a.addAll(expected);
-				b.addAll(result);
-				assertEquals(a, b);
+		assertEquals(expected.size(), result.size());
+		for (final SortedMap<String, Result> expMember : expected) {
+			if (!result.contains(expMember)) {
+				fail("expected solution '" + expMember
+						+ "' not found in result '" + result + "'");
 			}
+		}
+	}
 
-	protected void getSolutions(final boolean moreExpected, final Collection<SortedMap<String, Result>> collection)
+	protected void getSolutions(final boolean moreExpected,
+			final Collection<SortedMap<String, Result>> collection)
 			throws IOException, ParserException, LexerException {
-				CompoundPrologTerm solsterm = (CompoundPrologTerm) answer;
-				assertEquals("solutions", solsterm.getFunctor());
-				assertEquals(2, solsterm.getArity());
-				ListPrologTerm listterm = (ListPrologTerm) solsterm.getArgument(1);
-				for (PrologTerm bindings : listterm) {
-					ListPrologTerm solterm = (ListPrologTerm) bindings;
-					final SortedMap<String, Result> valuemap = extractSolution(solterm);
-					collection.add(valuemap);
-				}
-				final PrologTerm moreTerm = solsterm.getArgument(2);
-				if (moreExpected) {
-					assertEquals(new CompoundPrologTerm("more"), moreTerm);
-				} else {
-					assertEquals(new CompoundPrologTerm("all"), moreTerm);
-				}
-			}
+		CompoundPrologTerm solsterm = (CompoundPrologTerm) answer;
+		assertEquals("solutions", solsterm.getFunctor());
+		assertEquals(2, solsterm.getArity());
+		ListPrologTerm listterm = (ListPrologTerm) solsterm.getArgument(1);
+		for (PrologTerm bindings : listterm) {
+			ListPrologTerm solterm = (ListPrologTerm) bindings;
+			final SortedMap<String, Result> valuemap = extractSolution(solterm);
+			collection.add(valuemap);
+		}
+		final PrologTerm moreTerm = solsterm.getArgument(2);
+		if (moreExpected) {
+			assertEquals(new CompoundPrologTerm("more"), moreTerm);
+		} else {
+			assertEquals(new CompoundPrologTerm("all"), moreTerm);
+		}
+	}
 
-	private SortedMap<String, Result> extractSolution(final ListPrologTerm bindings) {
+	private SortedMap<String, Result> extractSolution(
+			final ListPrologTerm bindings) {
 		SortedMap<String, Result> solution = new TreeMap<String, Result>();
 		for (PrologTerm elemterm : bindings) {
 			CompoundPrologTerm bindterm = (CompoundPrologTerm) elemterm;
-			assertEquals("b", bindterm.getFunctor());
-			assertEquals(2, bindterm.getArity());
 			CompoundPrologTerm nameterm = (CompoundPrologTerm) bindterm
 					.getArgument(1);
 			assertTrue(nameterm.isAtom());
+			final String name = nameterm.getFunctor();
+			assertEquals(2, bindterm.getArity());
 			final PrologTerm resultTerm = bindterm.getArgument(2);
-			final Result result;
-			if (resultTerm.isList()) {
+			final String functor = bindterm.getFunctor();
+			Result result = null;
+			if ("b".equals(functor)) {
+				result = new Result.SingletonResult(resultTerm);
+			} else if ("s".equals(functor)) {
 				result = new Result.SetResult((ListPrologTerm) resultTerm);
 			} else {
-				result = new Result.SingletonResult(resultTerm);
+				fail("unexpected functor " + functor);
 			}
-			final String name = nameterm.getFunctor();
 			solution.put(name, result);
 		}
 		return solution;
@@ -157,7 +164,7 @@ public class InteractionTestBase {
 	protected void sendMessage(final String msg)
 			throws de.stups.probkodkod.parser.parser.ParserException,
 			de.stups.probkodkod.parser.lexer.LexerException, IOException {
-				answer = kodkod.sendMessage(msg);
-			}
+		answer = kodkod.sendMessage(msg);
+	}
 
 }

@@ -27,7 +27,11 @@ public interface Result {
 				return true;
 			if (obj == null || getClass() != obj.getClass())
 				return false;
-			return terms.equals(((SetResult) obj).terms);
+			final SetResult other = (SetResult) obj;
+			if (terms.size() != other.terms.size())
+				return false;
+			final boolean verdict = terms.equals(other.terms);
+			return verdict;
 		}
 
 		@Override
@@ -55,7 +59,8 @@ public interface Result {
 				return true;
 			if (obj == null || getClass() != obj.getClass())
 				return false;
-			return result.equals(((SingletonResult) obj).result);
+			final boolean verdict = result.equals(((SingletonResult) obj).result);
+			return verdict;
 		}
 
 		@Override

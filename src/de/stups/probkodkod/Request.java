@@ -76,9 +76,9 @@ public final class Request {
 					final RelationInfo relinfo = variables[i];
 					final TupleSet tupleSet = instance.tuples(relinfo
 							.getRelation());
-					pto.openTerm("b");
-					pto.printAtom(relinfo.getId());
 					final TupleType tupleType = relinfo.getTupleType();
+					pto.openTerm(tupleType.isSingleton() ? "b" : "s");
+					pto.printAtom(relinfo.getId());
 					if (tupleType.isSingleton()) {
 						final Tuple tuple = tupleSet.iterator().next();
 						writeTuple(pto, tupleType, tupleSet, tuple);
@@ -113,13 +113,11 @@ public final class Request {
 			final TupleType tupleType, final TupleSet tupleSet,
 			final Tuple tuple) {
 		final int[] intTuple = tupleType.decodeTuple(tuple, tupleSet);
-		pto.openTerm("t");
 		pto.openList();
 		for (int elem : intTuple) {
 			pto.printNumber(elem);
 		}
 		pto.closeList();
-		pto.closeTerm();
 	}
 
 	private Instance nextInstance() {
