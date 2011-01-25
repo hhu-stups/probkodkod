@@ -42,11 +42,11 @@ public class KodkodInteraction {
 			throws IOException, ParserException, LexerException {
 		logger.info("Starting kodkod session");
 
-		IPrologTermOutput pto = new PrologTermOutput(out);
+		final IPrologTermOutput pto = new PrologTermOutput(out, false);
 		session = new KodkodSession();
-		KodkodAnalysis analysis = new KodkodAnalysis(session, pto);
-		Lexer lexer = new EOFLexer(in);
-		Parser parser = new Parser(lexer);
+		final KodkodAnalysis analysis = new KodkodAnalysis(session, pto);
+		final Lexer lexer = new EOFLexer(in);
+		final Parser parser = new Parser(lexer);
 
 		while (!session.isStopped()) {
 			final Start tree = parser.parse();
