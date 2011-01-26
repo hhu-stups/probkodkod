@@ -158,6 +158,7 @@ Productions
   innerexpression =
       {const}  expr_const
     | {unary}  expr_unop  expression
+    | {multi}  expr_multop [expressions]:expression+
     | {binary} expr_binop [a]:expression [b]:expression
     | {relref} keyword_relref identifier
     | {varref} keyword_varref identifier
@@ -171,12 +172,14 @@ Productions
       {empty} keyword_empty
     | {iden}  keyword_iden;
 
-  expr_binop =
+  expr_multop =
       {union}     keyword_union
     | {inter}     keyword_intersection
-    | {diff}      keyword_diff
+    | {product}   keyword_product;
+
+  expr_binop =
+      {diff}      keyword_diff
     | {join}      keyword_join
-    | {product}   keyword_product
     | {overwrite} keyword_overwrite;
     
   expr_unop =

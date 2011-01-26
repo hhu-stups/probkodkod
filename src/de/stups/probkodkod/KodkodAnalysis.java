@@ -63,7 +63,7 @@ import de.stups.probkodkod.parser.node.AIffLogopBinary;
 import de.stups.probkodkod.parser.node.AImpliesLogopBinary;
 import de.stups.probkodkod.parser.node.AInLogopRel;
 import de.stups.probkodkod.parser.node.AIntInnerformula;
-import de.stups.probkodkod.parser.node.AInterExprBinop;
+import de.stups.probkodkod.parser.node.AInterExprMultop;
 import de.stups.probkodkod.parser.node.AIntsType;
 import de.stups.probkodkod.parser.node.AIntsetExprCast;
 import de.stups.probkodkod.parser.node.AJoinExprBinop;
@@ -73,6 +73,7 @@ import de.stups.probkodkod.parser.node.AList;
 import de.stups.probkodkod.parser.node.ALoneMultiplicity;
 import de.stups.probkodkod.parser.node.AMulIntexprBinop;
 import de.stups.probkodkod.parser.node.AMultInnerformula;
+import de.stups.probkodkod.parser.node.AMultiInnerexpression;
 import de.stups.probkodkod.parser.node.ANoMultiplicity;
 import de.stups.probkodkod.parser.node.ANotInnerformula;
 import de.stups.probkodkod.parser.node.AOneMultiplicity;
@@ -84,7 +85,7 @@ import de.stups.probkodkod.parser.node.APow2ExprCast;
 import de.stups.probkodkod.parser.node.APowpart;
 import de.stups.probkodkod.parser.node.APrjInnerexpression;
 import de.stups.probkodkod.parser.node.AProblem;
-import de.stups.probkodkod.parser.node.AProductExprBinop;
+import de.stups.probkodkod.parser.node.AProductExprMultop;
 import de.stups.probkodkod.parser.node.AQuantInnerformula;
 import de.stups.probkodkod.parser.node.AReflclsExprUnop;
 import de.stups.probkodkod.parser.node.ARelInnerformula;
@@ -103,10 +104,11 @@ import de.stups.probkodkod.parser.node.ATrueLogConst;
 import de.stups.probkodkod.parser.node.ATuple;
 import de.stups.probkodkod.parser.node.ATupleset;
 import de.stups.probkodkod.parser.node.AUnaryInnerexpression;
-import de.stups.probkodkod.parser.node.AUnionExprBinop;
+import de.stups.probkodkod.parser.node.AUnionExprMultop;
 import de.stups.probkodkod.parser.node.AVarrefInnerexpression;
 import de.stups.probkodkod.parser.node.PArgument;
 import de.stups.probkodkod.parser.node.PDecls;
+import de.stups.probkodkod.parser.node.PExpression;
 import de.stups.probkodkod.parser.node.PFormula;
 import de.stups.probkodkod.parser.node.PLogopFunction;
 import de.stups.probkodkod.parser.node.PRelation;
@@ -136,6 +138,7 @@ public class KodkodAnalysis extends DepthFirstAdapter {
 	private static final Map<String, Quantifier> QUANTIFIERS = new HashMap<String, Quantifier>();
 
 	private static final Map<String, ExprOperator> BINEXPROPS = new HashMap<String, ExprOperator>();
+	private static final Map<String, ExprOperator> MULTIEXPROPS = new HashMap<String, ExprOperator>();
 	private static final Map<String, ExprOperator> UNEXPROPS = new HashMap<String, ExprOperator>();
 	private static final Map<String, Multiplicity> MULTIPLICITIES = new HashMap<String, Multiplicity>();
 	private static final Map<String, Expression> CONSTEXPR = new HashMap<String, Expression>();
@@ -156,12 +159,13 @@ public class KodkodAnalysis extends DepthFirstAdapter {
 		QUANTIFIERS.put(AAllQuantifier.class.getName(), Quantifier.ALL);
 		QUANTIFIERS.put(AExistsQuantifier.class.getName(), Quantifier.SOME);
 
-		BINEXPROPS.put(ADiffExprBinop.class.getName(), ExprOperator.DIFFERENCE);
-		BINEXPROPS.put(AInterExprBinop.class.getName(),
+		MULTIEXPROPS.put(AProductExprMultop.class.getName(),
+				ExprOperator.PRODUCT);
+		MULTIEXPROPS.put(AUnionExprMultop.class.getName(), ExprOperator.UNION);
+		MULTIEXPROPS.put(AInterExprMultop.class.getName(),
 				ExprOperator.INTERSECTION);
+		BINEXPROPS.put(ADiffExprBinop.class.getName(), ExprOperator.DIFFERENCE);
 		BINEXPROPS.put(AJoinExprBinop.class.getName(), ExprOperator.JOIN);
-		BINEXPROPS.put(AProductExprBinop.class.getName(), ExprOperator.PRODUCT);
-		BINEXPROPS.put(AUnionExprBinop.class.getName(), ExprOperator.UNION);
 		BINEXPROPS.put(AOverwriteExprBinop.class.getName(),
 				ExprOperator.OVERRIDE);
 		UNEXPROPS.put(AClosureExprUnop.class.getName(), ExprOperator.CLOSURE);
@@ -359,8 +363,8 @@ public class KodkodAnalysis extends DepthFirstAdapter {
 	@Override
 	public void caseAAndInnerformula(final AAndInnerformula node) {
 		final Collection<PFormula> nodes = node.getFormula();
-		int size = nodes.size();
-		if (nodes.isEmpty()) {
+		int size = nodes == null ? 0 : nodes.size();
+		if (size == 0) {
 			formulaStack.push(Formula.TRUE);
 		} else if (size == 1) {
 			// just put the inner formula onto the stack
@@ -446,6 +450,26 @@ public class KodkodAnalysis extends DepthFirstAdapter {
 			formula = subset.and(unique);
 		}
 		formulaStack.push(formula);
+	}
+
+	@Override
+	public void caseAMultiInnerexpression(final AMultiInnerexpression node) {
+		final String name = node.getExprMultop().getClass().getName();
+		final ExprOperator op = MULTIEXPROPS.get(name);
+		if (op == null)
+			throw new IllegalStateException("Unexpected operator " + name);
+		final Collection<PExpression> nodes = node.getExpressions();
+		final int size = nodes == null ? 0 : nodes.size();
+		if (size == 0)
+			throw new IllegalStateException("missing argument for " + name);
+		final Expression[] expressions = new Expression[size];
+		int pos = 0;
+		for (final PExpression sub : nodes) {
+			sub.apply(this);
+			expressions[pos] = expressionStack.pop();
+			pos++;
+		}
+		expressionStack.push(Expression.compose(op, expressions));
 	}
 
 	@Override

@@ -15,9 +15,8 @@ problem loop
        (join
          (closure
            (intersection
-             (intersection
-               (relref succs)
-               (product (relref L) (relref Blocks)))
+             (relref succs)
+             (product (relref L) (relref Blocks))
              (product (relref Blocks) (relref L))))
          (varref l)))))
 
