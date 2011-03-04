@@ -107,8 +107,8 @@ Productions
       {standard} [ol]:parenl [id]:identifier [size]:number [or]:parenr
     | {ints}     [ol]:parenl keyword_ints [pow2]:powpart [intatoms]:bitpart? [rl]:parenr;
     
-  powpart = [ol]:parenl [id]:identifier [lower]:number [upper]:number [or]:parenr;
-  bitpart = [ol]:parenl [id]:identifier [lower]:number [upper]:number [or]:parenr;
+  powpart = [ol]:parenl [id]:identifier [lower]:znumber [upper]:znumber [or]:parenr;
+  bitpart = [ol]:parenl [id]:identifier [lower]:znumber [upper]:znumber [or]:parenr;
   
   relation = [ol]:parenl [id]:identifier [singleton]:keyword_singleton? [extsub]:reltype [types]:identifier+ [elements]:tupleset? [or]:parenr;
   reltype = {exact} keyword_exact | {subset} keyword_subset;
@@ -189,7 +189,7 @@ Productions
 
   intexpression = parenl innerintexpression parenr;
   innerintexpression =
-      {const}     number
+      {const}     znumber
     | {card}      keyword_cardinality expression
     | {binary}    intexpr_binop [a]:intexpression [b]:intexpression
     | {cast}      keyword_expr2int expression;

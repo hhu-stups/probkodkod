@@ -30,7 +30,6 @@ public class KodkodUtil {
 			final int[] ints) {
 		final TupleFactory factory = universe.factory();
 		return factory.setOf(fetchAtoms(universe, ints));
-
 	}
 
 	private static Object[] fetchAtoms(final Universe universe, final int[] ints) {
@@ -42,9 +41,13 @@ public class KodkodUtil {
 	}
 
 	public static int[] createInts(final int width) {
+		return createInts(0, width);
+	}
+
+	public static int[] createInts(final int start, final int width) {
 		int[] result = new int[width];
 		for (int i = 0; i < width; i++) {
-			result[i] = i;
+			result[i] = start + i;
 		}
 		return result;
 	}

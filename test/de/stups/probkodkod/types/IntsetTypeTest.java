@@ -12,7 +12,7 @@ import de.stups.probkodkod.test.KodkodUtil;
 import de.stups.probkodkod.test.Permutations;
 
 public class IntsetTypeTest {
-	private static final int TESTSIZE = 3;
+	private static final int TESTSIZE = 4;
 
 	@Test
 	public void testIsSetenabled() {
@@ -34,7 +34,8 @@ public class IntsetTypeTest {
 	}
 
 	private void testAllCombinations(final int offset) {
-		final int[] ints = KodkodUtil.createInts(TESTSIZE);
+		final int startInt = -(TESTSIZE / 2);
+		final int[] ints = KodkodUtil.createInts(startInt, TESTSIZE);
 		final Universe universe = KodkodUtil.createUniverse(offset, TESTSIZE);
 		for (final int[] perm : new Permutations(ints)) {
 			testAllEncodeDecodes(offset, universe, perm);
@@ -54,6 +55,7 @@ public class IntsetTypeTest {
 					singleAtom);
 			final TupleSet tupleSet = KodkodUtil.fetchTupleSet(universe, atoms);
 			final Tuple tuple = tupleSet.iterator().next();
+			assertEquals("expected a singleton tuple set", 1, tupleSet.size());
 			final int output = type.decode(0, tuple, tupleSet);
 			assertEquals("output must match input", input, output);
 		}

@@ -36,4 +36,8 @@ public class IntegerIntervall {
 		return "[" + lower + ".." + upper + "]";
 	}
 
+	public boolean contains(final int value) {
+		return lower <= value && value <= upper;
+	}
+
 }

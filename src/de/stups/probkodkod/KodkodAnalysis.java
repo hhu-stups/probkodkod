@@ -74,6 +74,7 @@ import de.stups.probkodkod.parser.node.ALoneMultiplicity;
 import de.stups.probkodkod.parser.node.AMulIntexprBinop;
 import de.stups.probkodkod.parser.node.AMultInnerformula;
 import de.stups.probkodkod.parser.node.AMultiInnerexpression;
+import de.stups.probkodkod.parser.node.ANegZnumber;
 import de.stups.probkodkod.parser.node.ANoMultiplicity;
 import de.stups.probkodkod.parser.node.ANotInnerformula;
 import de.stups.probkodkod.parser.node.AOneMultiplicity;
@@ -81,6 +82,7 @@ import de.stups.probkodkod.parser.node.AOrLogopBinary;
 import de.stups.probkodkod.parser.node.AOverwriteExprBinop;
 import de.stups.probkodkod.parser.node.APartialLogopFunction;
 import de.stups.probkodkod.parser.node.APosReqtype;
+import de.stups.probkodkod.parser.node.APosZnumber;
 import de.stups.probkodkod.parser.node.APow2ExprCast;
 import de.stups.probkodkod.parser.node.APowpart;
 import de.stups.probkodkod.parser.node.APrjInnerexpression;
@@ -117,6 +119,7 @@ import de.stups.probkodkod.parser.node.PReqtype;
 import de.stups.probkodkod.parser.node.PTuple;
 import de.stups.probkodkod.parser.node.PTupleset;
 import de.stups.probkodkod.parser.node.PType;
+import de.stups.probkodkod.parser.node.PZnumber;
 import de.stups.probkodkod.parser.node.Start;
 import de.stups.probkodkod.parser.node.TIdentifier;
 import de.stups.probkodkod.parser.node.TNumber;
@@ -519,7 +522,7 @@ public class KodkodAnalysis extends DepthFirstAdapter {
 
 	@Override
 	public void outAConstInnerintexpression(final AConstInnerintexpression node) {
-		int value = extractInt(node.getNumber());
+		int value = extractInt(node.getZnumber());
 		intExpressionStack.push(IntConstant.constant(value));
 	}
 
@@ -739,6 +742,21 @@ public class KodkodAnalysis extends DepthFirstAdapter {
 
 	private static int extractInt(final TNumber node) {
 		return Integer.parseInt(node.getText());
+	}
+
+	private static int extractInt(final PZnumber node) {
+		final int factor;
+		final TNumber numberNode;
+		if (node instanceof APosZnumber) {
+			factor = 1;
+			numberNode = ((APosZnumber) node).getNumber();
+		} else if (node instanceof ANegZnumber) {
+			factor = -1;
+			numberNode = ((ANegZnumber) node).getNumber();
+		} else
+			throw new IllegalStateException("Unexpected class "
+					+ node.getClass().getName());
+		return factor * extractInt(numberNode);
 	}
 
 	private Type[] extractTypes(final Collection<TIdentifier> nodes) {

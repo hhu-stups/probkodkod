@@ -1,0 +1,8 @@
+problem negative
+
+((inttype (p2i -15 15)))
+
+ ((x singleton subset p2i))
+  
+ (equals (expr2int (relref x)) (-9))
+ 

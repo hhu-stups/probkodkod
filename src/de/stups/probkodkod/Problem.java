@@ -89,14 +89,17 @@ public class Problem {
 		final IntegerIntervall pow2Interval = registerPow2(pow2id, bitsForPows,
 				totalBits, pow2start);
 
-		bitwidth = pow2Interval != null ? pow2Interval.getSize() + 1 : null;
+		bitwidth = pow2Interval != null ? pow2Interval.getSize() : null;
 
 		currentSize += totalBits;
 	}
 
 	private int calculateBitsForPows(final IntegerIntervall pow2range) {
-		final int a = Math.abs(pow2range.getLower());
-		final int b = Math.abs(pow2range.getUpper());
+		final int lower = pow2range.getLower();
+		final int upper = pow2range.getUpper();
+		// for negative integers, we need one bit less
+		final int a = lower < 0 ? -lower - 1 : lower;
+		final int b = upper < 0 ? -upper - 1 : upper;
 		final int maxint = Math.max(a, b);
 		return IntTools.bitwidth(maxint) + 1;
 	}
@@ -138,7 +141,11 @@ public class Problem {
 			final int minAtom = intset.getLower();
 			final int maxAtom = intset.getUpper();
 			final int bitwidth = IntTools.bitwidth(maxAtom);
-			bitsForAtoms = (maxAtom - minAtom + 1) - bitwidth;
+			final int minPow = IntTools
+					.smallestRepresentableInteger(bitsForPows);
+			final boolean sharedNeg = intset.contains(minPow);
+			bitsForAtoms = (maxAtom - minAtom + 1) - bitwidth
+					+ (sharedNeg ? -1 : 0);
 
 			if (bitwidth > bitsForPows)
 				throw new IllegalArgumentException("too many atoms (" + maxAtom
@@ -151,20 +158,33 @@ public class Problem {
 	private int[] createIntegerArray(final IntegerIntervall intset,
 			final int bitsForPows, final int bitsForAtoms) {
 		final int[] numbers = new int[bitsForAtoms + bitsForPows];
+		final int minPow = IntTools.smallestRepresentableInteger(bitsForPows);
+		final boolean negPowInAtoms = intset != null && intset.contains(minPow);
 		if (intset != null) {
 			int pos = 0;
 			for (int currentInt = intset.getLower(); currentInt <= intset
 					.getUpper(); currentInt++) {
-				if (!IntTools.isPow2(currentInt)) {
+				if (currentInt != minPow
+						&& (currentInt < 0 || !IntTools.isPow2(currentInt))) {
 					numbers[pos] = currentInt;
 					pos++;
 				}
 			}
 		}
+		final int start;
+		if (negPowInAtoms) {
+			start = 1;
+			numbers[bitsForAtoms] = minPow;
+		} else {
+			start = 0;
+		}
 		int pow = 0;
-		for (int i = 0; i < bitsForPows; i++) {
+		for (int i = 0; i < bitsForPows - 1; i++) {
 			pow = pow == 0 ? 1 : pow * 2;
-			numbers[bitsForAtoms + i] = pow;
+			numbers[start + bitsForAtoms + i] = pow;
+		}
+		if (!negPowInAtoms) {
+			numbers[numbers.length - 1] = minPow;
 		}
 		return numbers;
 	}
@@ -254,4 +274,35 @@ public class Problem {
 		return universe;
 	}
 
+	public CalculatedIntegerAtoms getCalculatedIntegerAtoms() {
+		return new CalculatedIntegerAtoms(numberOffset, numbers, bitwidth);
+	}
+
+	public static class CalculatedIntegerAtoms {
+		private final int numberOffset;
+		private final int[] numbers;
+		private final Integer bitwidth;
+
+		public CalculatedIntegerAtoms(final int numberOffset,
+				final int[] numbers, final Integer bitwidth) {
+			this.numberOffset = numberOffset;
+			this.numbers = numbers == null ? null : new int[numbers.length];
+			if (numbers != null) {
+				System.arraycopy(numbers, 0, this.numbers, 0, numbers.length);
+			}
+			this.bitwidth = bitwidth;
+		}
+
+		public int getNumberOffset() {
+			return numberOffset;
+		}
+
+		public int[] getNumbers() {
+			return numbers;
+		}
+
+		public Integer getBitwidth() {
+			return bitwidth;
+		}
+	}
 }

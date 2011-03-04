@@ -36,11 +36,15 @@ public class TestInteraction {
 		this.analysis = new KodkodAnalysis(session, pto);
 	}
 
+	@SuppressWarnings("unused")
 	public PrologTerm sendMessage(final String msg) throws ParserException,
 			LexerException, IOException {
 		final StringReader sreader = new StringReader(msg);
 		final Lexer lexer = new EOFLexer(sreader);
 		final Parser parser = new Parser(lexer);
+		if (1 == 0) {
+			printPositions(msg);
+		}
 		final Start tree = parser.parse();
 		tree.apply(analysis);
 		pto.flush();
@@ -54,5 +58,19 @@ public class TestInteraction {
 			throw new IllegalStateException(
 					"expected one sentence, but there are " + sentences.size());
 		return sentences.isEmpty() ? null : sentences.iterator().next();
+	}
+
+	private void printPositions(final String msg) {
+		printPositions(msg.length(), 100);
+		printPositions(msg.length(), 10);
+		printPositions(msg.length(), 1);
+		System.out.println("\nString: " + msg);
+	}
+
+	private void printPositions(final int length, final int e) {
+		System.out.print("\n        ");
+		for (int i = 1; i <= length; i++) {
+			System.out.print(((i % (e * 10)) / e));
+		}
 	}
 }

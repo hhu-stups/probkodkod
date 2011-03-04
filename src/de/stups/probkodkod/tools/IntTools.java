@@ -23,6 +23,21 @@ public final class IntTools {
 		return bits;
 	}
 
+	public static int pow2(final int exp) {
+		if (exp < 0)
+			throw new IllegalArgumentException(
+					"pow2 needs non-negative argument");
+		int pow = 1;
+		for (int i = 0; i < exp; i++) {
+			pow <<= 1;
+		}
+		return pow;
+	}
+
+	public static int smallestRepresentableInteger(final int bitwidth) {
+		return -pow2(bitwidth - 1);
+	}
+
 	/**
 	 * @param value
 	 * @return <code>true</code> if there is an i such that value == exp(2,i)

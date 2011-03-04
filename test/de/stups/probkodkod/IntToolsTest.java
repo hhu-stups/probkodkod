@@ -5,6 +5,7 @@ package de.stups.probkodkod;
 
 import static de.stups.probkodkod.tools.IntTools.bitwidth;
 import static de.stups.probkodkod.tools.IntTools.countOneBits;
+import static de.stups.probkodkod.tools.IntTools.pow2;
 import junit.framework.Assert;
 
 import org.junit.Test;
@@ -35,5 +36,13 @@ public class IntToolsTest {
 		Assert.assertEquals(3, bitwidth(4));
 		Assert.assertEquals(5, bitwidth(31));
 		Assert.assertEquals(6, bitwidth(32));
+	}
+
+	public void testPow2() {
+		Assert.assertEquals(1, pow2(0));
+		Assert.assertEquals(2, pow2(1));
+		Assert.assertEquals(4, pow2(2));
+		Assert.assertEquals(8, pow2(3));
+		Assert.assertEquals(16, pow2(4));
 	}
 }

@@ -16,8 +16,6 @@ import org.junit.Test;
 import de.stups.probkodkod.IntegerIntervall;
 import de.stups.probkodkod.test.KodkodUtil;
 import de.stups.probkodkod.test.Permutations;
-import de.stups.probkodkod.types.Pow2Type;
-import de.stups.probkodkod.types.Type;
 
 /**
  * Test cases for the {@link Pow2Type}
@@ -49,12 +47,13 @@ public class Pow2TypeTest {
 
 	public void testAllDecodeEncode(final int offset) {
 		int[] powersOf2 = createPowersOfTwo(BITWIDTH_TEST);
-		final int maxint = (1 << BITWIDTH_TEST) - 1;
+		final int maxint = (1 << (BITWIDTH_TEST - 1)) - 1;
+		final int minint = -(1 << (BITWIDTH_TEST - 1));
 		final Universe universe = KodkodUtil.createUniverse(offset,
 				BITWIDTH_TEST);
 		final TupleFactory factory = universe.factory();
 		for (final int[] perm : new Permutations(powersOf2)) {
-			for (int i = 0; i < maxint; i++) {
+			for (int i = minint; i < maxint; i++) {
 				testDecodeEncode(offset, factory, perm, i);
 			}
 		}
@@ -70,16 +69,18 @@ public class Pow2TypeTest {
 		final int value = type.decode(0, null, tupleSet);
 		assertEquals(
 				"Result must match input for permutation "
-						+ Arrays.toString(perm), i, value);
+						+ Arrays.toString(perm) + ", input is " + i
+						+ ", output is " + value, i, value);
 	}
 
 	private int[] createPowersOfTwo(final int width) {
 		int[] result = new int[width];
 		int p2 = 1;
-		for (int i = 0; i < width; i++) {
+		for (int i = 0; i < width - 1; i++) {
 			result[i] = p2;
 			p2 <<= 1;
 		}
+		result[width - 1] = -p2;
 		return result;
 	}
 
