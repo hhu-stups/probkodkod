@@ -15,7 +15,7 @@ import de.stups.probkodkod.test.Result;
 import de.stups.probkodkod.test.ResultSetBuilder;
 
 public class KodkodTest extends InteractionTestBase {
-	// @Test
+	@Test
 	public void testLoop() throws ParserException, LexerException, IOException,
 			InterruptedException {
 		String problem = load("loop.kodkod");
@@ -68,7 +68,7 @@ public class KodkodTest extends InteractionTestBase {
 		checkSolutions(createExpResLoop(), loop2);
 	}
 
-	// @Test
+	@Test
 	public void testIntegers() throws IOException, ParserException,
 			LexerException, InterruptedException {
 		ResultSetBuilder b = new ResultSetBuilder();
@@ -76,7 +76,7 @@ public class KodkodTest extends InteractionTestBase {
 		testAll("integers", b.toCollection());
 	}
 
-	// @Test
+	@Test
 	public void testProjection() throws IOException, ParserException,
 			LexerException, InterruptedException {
 		ResultSetBuilder b = new ResultSetBuilder();
@@ -84,7 +84,7 @@ public class KodkodTest extends InteractionTestBase {
 		testAll("projection", b.toCollection());
 	}
 
-	// @Test
+	@Test
 	public void testFunctions() throws IOException, ParserException,
 			LexerException, InterruptedException {
 		ResultSetBuilder b = new ResultSetBuilder();
@@ -93,7 +93,7 @@ public class KodkodTest extends InteractionTestBase {
 		testAll("functions", b.toCollection());
 	}
 
-	// @Test
+	@Test
 	public void testIntegerCasts() throws IOException, ParserException,
 			LexerException, InterruptedException {
 		ResultSetBuilder b = new ResultSetBuilder();
@@ -101,7 +101,7 @@ public class KodkodTest extends InteractionTestBase {
 		testAll("integercast", b.toCollection());
 	}
 
-	// @Test
+	@Test
 	public void testIntegerVariable() throws IOException, ParserException,
 			LexerException, InterruptedException {
 		ResultSetBuilder b = new ResultSetBuilder();
@@ -109,7 +109,7 @@ public class KodkodTest extends InteractionTestBase {
 		testAll("intvar", b.toCollection());
 	}
 
-	// @Test
+	@Test
 	public void testIntegerRange() throws IOException, ParserException,
 			LexerException, InterruptedException {
 		ResultSetBuilder b = new ResultSetBuilder();
@@ -126,7 +126,7 @@ public class KodkodTest extends InteractionTestBase {
 		testAll("negative", b.toCollection());
 	}
 
-	// @Test
+	@Test
 	public void testEmptySetInRequest() throws IOException, ParserException,
 			LexerException {
 		final String problem = load("simpletwovars.kodkod");
@@ -143,6 +143,20 @@ public class KodkodTest extends InteractionTestBase {
 		ResultSetBuilder b = new ResultSetBuilder();
 		b.set("y").store();
 
+		checkSolutions(b.toCollection(), sol);
+	}
+
+	@Test
+	public void testBug1() throws ParserException, LexerException, IOException {
+		final String problem = load("returnzero.kodkod");
+		sendMessage(problem + ".");
+
+		sendMessage("request returnzero 10 pos ().");
+		List<SortedMap<String, Result>> sol = new LinkedList<SortedMap<String, Result>>();
+		getSolutions(false, sol);
+
+		ResultSetBuilder b = new ResultSetBuilder();
+		b.single("x", t(0)).store();
 		checkSolutions(b.toCollection(), sol);
 	}
 }

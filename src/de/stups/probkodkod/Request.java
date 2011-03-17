@@ -80,7 +80,8 @@ public final class Request {
 					pto.openTerm(tupleType.isSingleton() ? "b" : "s");
 					pto.printAtom(relinfo.getId());
 					if (tupleType.isSingleton()) {
-						final Tuple tuple = tupleSet.iterator().next();
+						final Tuple tuple = tupleSet.isEmpty() ? null
+								: tupleSet.iterator().next();
 						writeTuple(pto, tupleType, tupleSet, tuple);
 					} else {
 						pto.openList();

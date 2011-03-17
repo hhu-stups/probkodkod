@@ -1,0 +1,6 @@
+problem returnzero 
+  ( (inttype(p2i 0 0)) )
+  
+  ( (x singleton subset p2i) )
+  
+  (equals(expr2int(relref x))(0))
