@@ -26,8 +26,9 @@
 		</uptodate>
 	</target>
 	
-	<target name="clear" depends="init">
+	<target name="clear">
 		<delete> <fileset dir="${build}" includes="**/*"/> </delete>
+		<delete includeemptydirs="yes"> <fileset dir="${parser}" includes="**/*"/> </delete>
 	</target>
 	
 	<target name="parser" depends="init" unless="parser.uptodate" description="Generate the parser classes">
