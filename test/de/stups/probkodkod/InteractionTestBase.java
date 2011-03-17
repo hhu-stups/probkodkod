@@ -64,7 +64,7 @@ public class InteractionTestBase {
 			buf.append((char) c);
 			c = input.read();
 		}
-		return buf.toString().replace('\n', ' ');
+		return buf.toString();
 	}
 
 	protected void testAll(final String name,
