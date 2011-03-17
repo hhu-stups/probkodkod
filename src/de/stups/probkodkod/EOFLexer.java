@@ -19,7 +19,6 @@ import de.stups.probkodkod.parser.node.Token;
  * @author plagge
  */
 public class EOFLexer extends Lexer {
-
 	public EOFLexer(final PushbackReader in) {
 		super(in);
 	}
@@ -39,10 +38,15 @@ public class EOFLexer extends Lexer {
 	}
 
 	private Token filter(Token token) {
-		if (token instanceof TFullstop) {
+		if (token instanceof EOF)
+			throw new AbortException();
+		else if (token instanceof TFullstop) {
 			token = new EOF();
 		}
 		return token;
 	}
 
+	public static class AbortException extends RuntimeException {
+		private static final long serialVersionUID = 4042645224685292559L;
+	}
 }

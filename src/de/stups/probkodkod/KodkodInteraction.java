@@ -48,10 +48,14 @@ public class KodkodInteraction {
 		final Lexer lexer = new EOFLexer(in);
 		final Parser parser = new Parser(lexer);
 
-		while (!session.isStopped()) {
-			final Start tree = parser.parse();
-			tree.apply(analysis);
-			pto.flush();
+		try {
+			while (!session.isStopped()) {
+				final Start tree = parser.parse();
+				tree.apply(analysis);
+				pto.flush();
+			}
+		} catch (EOFLexer.AbortException e) {
+			logger.info("EOF reached");
 		}
 
 		logger.info("Kodkod session finished");
