@@ -10,7 +10,6 @@ import kodkod.ast.IntConstant;
 import kodkod.ast.Relation;
 import kodkod.engine.Solution;
 import kodkod.engine.Solver;
-import kodkod.engine.satlab.SATFactory;
 import kodkod.instance.Bounds;
 import kodkod.instance.Instance;
 import kodkod.instance.Tuple;
@@ -46,7 +45,7 @@ public class NegativeIntTest {
 		bounds.bound(x, factory.allOf(1));
 		final Formula formula = x.sum().eq(IntConstant.constant(value));
 		final Solver solver = new Solver();
-		solver.options().setSolver(SATFactory.MiniSat);
+		solver.options().setSolver(SolverChecker.determineSatFactory());
 		solver.options().setBitwidth(5);
 		final Iterator<Solution> iterator = solver.solveAll(formula, bounds);
 		Assert.assertTrue("solution expected", iterator.hasNext());

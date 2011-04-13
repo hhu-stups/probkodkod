@@ -21,6 +21,8 @@ import de.prob.prolog.output.IPrologTermOutput;
  * 
  */
 public class KodkodSession {
+	private final SATFactory SOLVER = SolverChecker.determineSatFactory();
+
 	private final Logger logger = Logger.getLogger(KodkodSession.class
 			.getName());
 	private final Map<String, ImmutableProblem> problems = new HashMap<String, ImmutableProblem>();
@@ -33,7 +35,7 @@ public class KodkodSession {
 		problems.put(id, problem);
 
 		final Solver solver = new Solver();
-		solver.options().setSolver(SATFactory.MiniSat);
+		solver.options().setSolver(SOLVER);
 		solver.options().setSymmetryBreaking(0);
 		final Integer bitwidth = problem.getBitwidth();
 		if (bitwidth != null) {

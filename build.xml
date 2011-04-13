@@ -10,6 +10,7 @@
 	<property name="main.class" value="de.stups.probkodkod.KodkodInteraction"/>
 	<property name="lib" value="lib"/>
 	<property name="kodkod" value="${lib}/kodkod.jar"/>
+	<property name="sat4j" value="${lib}/org.sat4j.core.jar"/>
 	<property name="prolog" value="${lib}/prolog.jar"/>
 	<property name="junit" value="${lib}/junit-4.8.2.jar"/>
 	<property name="uptodate" value="uptodate"/>
@@ -20,18 +21,21 @@
 	<target name="init"> 
 		<mkdir dir="${build}"/>
 		<mkdir dir="${jar}"/>
+	</target>
+	
+	<target name="is_uptodate">
 		<uptodate property="parser.uptodate">
 			<srcfiles dir="${src}" includes="*.grammar"/>
 			<mapper type="merge" to="../${parser}/${uptodate}"/>
 		</uptodate>
 	</target>
 	
-	<target name="clear">
+	<target name="clear" depends="init">
 		<delete> <fileset dir="${build}" includes="**/*"/> </delete>
 		<delete includeemptydirs="yes"> <fileset dir="${parser}" includes="**/*"/> </delete>
 	</target>
 	
-	<target name="parser" depends="init" unless="parser.uptodate" description="Generate the parser classes">
+	<target name="parser" depends="is_uptodate,init" unless="parser.uptodate" description="Generate the parser classes">
 		<delete> <fileset dir="${parser}" includes="**/*"/> </delete>
 		<sablecc src="${src}" includes="*.grammar" outputdirectory="${parser}"/>
 		<touch file="${parser}/${uptodate}"/>
@@ -74,6 +78,7 @@
 			<classpath location="${kodkod}"/>
 			<classpath location="${prolog}"/>
 			<classpath location="${junit}"/>
+			<classpath location="${sat4j}"/>
 			<classpath location="${jar}"/>
 			<jvmarg value="-Djava.library.path=${lib}"/>
 			<formatter type="plain" usefile="true" />
