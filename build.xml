@@ -10,7 +10,8 @@
 	<property name="main.class" value="de.stups.probkodkod.KodkodInteraction"/>
 	<property name="lib" value="lib"/>
 	<property name="kodkod" value="${lib}/kodkod.jar"/>
-	<property name="sat4j" value="${lib}/org.sat4j.core.jar"/>
+	<property name="sat4jjar" value="org.sat4j.core.jar"/>
+	<property name="sat4j" value="${lib}/${sat4jjar}"/>
 	<property name="prolog" value="${lib}/prolog.jar"/>
 	<property name="junit" value="${lib}/junit-4.8.2.jar"/>
 	<property name="uptodate" value="uptodate"/>
@@ -92,7 +93,7 @@
 		<manifest file="${build}/MANIFEST.MF">
 			<attribute name="Built-By" value="${user.name}"/>
 			<attribute name="Main-Class" value="${main.class}"/>
-			<attribute name="Class-Path" value="kodkod.jar"/>
+			<attribute name="Class-Path" value="${sat4jjar}"/>
 		</manifest>
 	</target>
 	
