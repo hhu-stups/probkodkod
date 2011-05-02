@@ -16,6 +16,21 @@ import de.stups.probkodkod.test.ResultSetBuilder;
 
 public class KodkodTest extends InteractionTestBase {
 	@Test
+	public void testQuantificationOnRelations() throws ParserException,
+			LexerException, IOException {
+		final String problem = load("relquant.kodkod");
+		sendMessage(problem + ".");
+
+		sendMessage("request relquant 10 pos ().");
+		List<SortedMap<String, Result>> sol = new LinkedList<SortedMap<String, Result>>();
+		getSolutions(false, sol);
+
+		ResultSetBuilder b = new ResultSetBuilder();
+		b.set("f", t(0, 0), t(0, 1), t(1, 0), t(1, 1)).store();
+		checkSolutions(b.toCollection(), sol);
+	}
+
+	@Test
 	public void testLoop() throws ParserException, LexerException, IOException,
 			InterruptedException {
 		String problem = load("loop.kodkod");
@@ -159,4 +174,5 @@ public class KodkodTest extends InteractionTestBase {
 		b.single("x", t(0)).store();
 		checkSolutions(b.toCollection(), sol);
 	}
+
 }

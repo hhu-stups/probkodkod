@@ -1,0 +1,9 @@
+problem relquant
+
+ ((d 2) (r 2))
+ 
+ ((f subset d r))
+ 
+ (all 
+   ((e 2 one (product (relref d) (relref r))))
+   (in (varref e) (relref f)))
