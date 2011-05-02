@@ -94,7 +94,7 @@ public class TupleType {
 		final TupleFactory factory = universe.factory();
 		final Tuple lowerTuple = factory.tuple(lower);
 		final Tuple upperTuple = factory.tuple(upper);
-		return factory.range(lowerTuple, upperTuple);
+		return factory.area(lowerTuple, upperTuple);
 	}
 
 	/**
