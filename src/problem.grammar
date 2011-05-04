@@ -53,6 +53,7 @@ Tokens
   keyword_comprehension = 'comp'; 
   keyword_empty = 'empty';
   keyword_iden = 'iden';
+  keyword_univ = 'univ';
   keyword_ranges = 'ranges';
   keyword_ext = 'ext';
   keyword_relref = 'relref';
@@ -170,7 +171,8 @@ Productions
   expr_cast = {pow2} keyword_int2pow2 | {intset} keyword_int2intset; 
   expr_const =
       {empty} keyword_empty
-    | {iden}  keyword_iden;
+    | {iden}  keyword_iden
+    | {univ}  keyword_univ;
 
   expr_multop =
       {union}     keyword_union
