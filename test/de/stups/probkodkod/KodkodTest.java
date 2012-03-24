@@ -5,6 +5,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.SortedMap;
 
 import org.junit.Test;
@@ -175,4 +176,29 @@ public class KodkodTest extends InteractionTestBase {
 		checkSolutions(b.toCollection(), sol);
 	}
 
+	@Test
+	public void testSendMoreMoney() throws ParserException, LexerException,
+			IOException {
+		final String problem = load("sendmoremoney.kodkod");
+		sendMessage(problem + ".");
+		sendMessage("request sendmoremoney 100 pos ().");
+		List<SortedMap<String, Result>> sol = new LinkedList<SortedMap<String, Result>>();
+		getSolutions(false, sol);
+
+		ResultSetBuilder b = new ResultSetBuilder();
+		b.single("s", t(9));
+		b.single("e", t(5));
+		b.single("n", t(6));
+		b.single("d", t(7));
+		b.single("m", t(1));
+		b.single("o", t(0));
+		b.single("r", t(8));
+		b.single("y", t(2));
+		b.store();
+		checkSolutions(b.toCollection(), sol);
+
+		for (final Map<String, Result> entry : sol) {
+
+		}
+	}
 }

@@ -116,7 +116,7 @@ public class InteractionTestBase {
 			throws IOException, ParserException, LexerException {
 		CompoundPrologTerm solsterm = (CompoundPrologTerm) answer;
 		assertEquals("solutions", solsterm.getFunctor());
-		assertEquals(2, solsterm.getArity());
+		assertEquals(3, solsterm.getArity());
 		ListPrologTerm listterm = (ListPrologTerm) solsterm.getArgument(1);
 		for (PrologTerm bindings : listterm) {
 			ListPrologTerm solterm = (ListPrologTerm) bindings;
@@ -129,6 +129,8 @@ public class InteractionTestBase {
 		} else {
 			assertEquals(new CompoundPrologTerm("all"), moreTerm);
 		}
+		ListPrologTerm durterm = (ListPrologTerm) solsterm.getArgument(3);
+		assertEquals("number of durations", listterm.size(), durterm.size());
 	}
 
 	private SortedMap<String, Result> extractSolution(

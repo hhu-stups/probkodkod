@@ -63,14 +63,46 @@ public final class Request {
 	 *         have been send to the stream
 	 */
 	public boolean writeNextSolutions(final IPrologTermOutput pto, final int max) {
-		pto.openTerm("solutions");
-		pto.openList();
 		boolean solutionsPresent = true;
 		int num;
+		int size = 0;
+		long durations[] = new long[max];
+		Instance[] solutions = new Instance[max];
 		for (num = 0; solutionsPresent & num < max; num++) {
-			Instance instance = nextInstance();
+			final long start = System.currentTimeMillis();
+			final Instance instance = nextInstance();
+			durations[num] = System.currentTimeMillis() - start;
 			solutionsPresent = instance != null;
 			if (solutionsPresent) {
+				solutions[num] = instance;
+				size++;
+			}
+		}
+
+		pto.openTerm("solutions");
+		printInstances(solutions, pto);
+
+		pto.printAtom(solutionsPresent ? "more" : "all");
+		pto.openList();
+		long duration = 0;
+		for (int i = 0; i < size; i++) {
+			pto.printNumber(durations[i]);
+			duration += durations[i];
+		}
+		pto.closeList();
+		pto.closeTerm();
+		pto.fullstop();
+		if (logger.isLoggable(Level.FINE)) {
+			logger.fine("wrote " + num + " solutions, computed in " + duration
+					+ "ms");
+		}
+		return solutionsPresent;
+	}
+
+	private void printInstances(Instance[] solutions, IPrologTermOutput pto) {
+		pto.openList();
+		for (final Instance instance : solutions) {
+			if (instance != null) {
 				pto.openList();
 				for (int i = 0; i < variables.length; i++) {
 					final RelationInfo relinfo = variables[i];
@@ -94,13 +126,6 @@ public final class Request {
 			}
 		}
 		pto.closeList();
-		pto.printAtom(solutionsPresent ? "more" : "all");
-		if (logger.isLoggable(Level.FINE)) {
-			logger.fine("wrote " + num + " solutions");
-		}
-		pto.closeTerm();
-		pto.fullstop();
-		return solutionsPresent;
 	}
 
 	private void writeTupleSet(final IPrologTermOutput pto,
