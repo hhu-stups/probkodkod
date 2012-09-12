@@ -74,9 +74,9 @@ public class KodkodInteraction {
 			filehandler.setFormatter(new SimpleFormatter());
 			logger.setUseParentHandlers(false);
 			logger.addHandler(filehandler);
-			logger.setLevel(Level.ALL);
+			logger.setLevel(Level.SEVERE);
 
-			final FileWriter fw = new FileWriter("dump.txt");
+			final FileWriter fw = createDumpFile();
 			final Reader in;
 			final PrintWriter out;
 
@@ -101,5 +101,10 @@ public class KodkodInteraction {
 			logger.severe(e.toString());
 			e.printStackTrace();
 		}
+	}
+
+	protected static FileWriter createDumpFile() throws IOException {
+		return null;
+		// return new FileWriter("dump.txt");
 	}
 }
