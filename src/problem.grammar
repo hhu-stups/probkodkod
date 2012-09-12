@@ -59,6 +59,7 @@ Tokens
   keyword_varref = 'varref';
   keyword_request = 'request';
   keyword_stop = 'stop';
+  keyword_reset = 'reset';
   keyword_list = 'list';
   keyword_positive = 'pos';
   keyword_negative = 'neg';
@@ -93,6 +94,7 @@ Productions
     | {request} request
     | {list}    list
     | {stop}    stop
+    | {reset}   reset
     | {none};
 
   problem = keyword_problem [id]:identifier
@@ -208,3 +210,6 @@ Productions
   list = keyword_list [problem]:identifier [size]:number;
 
   stop = keyword_stop;
+  
+  reset = keyword_reset;
+  

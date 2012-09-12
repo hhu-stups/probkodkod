@@ -93,6 +93,7 @@ import de.stups.probkodkod.parser.node.ARelInnerformula;
 import de.stups.probkodkod.parser.node.ARelation;
 import de.stups.probkodkod.parser.node.ARelrefInnerexpression;
 import de.stups.probkodkod.parser.node.ARequest;
+import de.stups.probkodkod.parser.node.AReset;
 import de.stups.probkodkod.parser.node.ASetMultiplicity;
 import de.stups.probkodkod.parser.node.ASomeMultiplicity;
 import de.stups.probkodkod.parser.node.AStandardType;
@@ -306,6 +307,11 @@ public class KodkodAnalysis extends DepthFirstAdapter {
 	@Override
 	public void outAStop(final AStop node) {
 		session.stop();
+	}
+
+	@Override
+	public void outAReset(final AReset node) {
+		session.reset();
 	}
 
 	private Map<String, TupleSet> extractArguments(final List<PArgument> args,

@@ -90,6 +90,18 @@ public class KodkodSession {
 		this.stopped = true;
 	}
 
+	public void reset() {
+		long before = Runtime.getRuntime().freeMemory();
+		this.problems.clear();
+		this.solvers.clear();
+		this.currentRequests.clear();
+		System.gc();
+		long after = Runtime.getRuntime().freeMemory();
+		logger.info("session reseted (" + before
+				+ " bytes of free memory before and " + after
+				+ " bytes after reset (diff: " + (after - before) + " bytes)");
+	}
+
 	private void info(final ImmutableProblem problem, final String info) {
 		if (logger.isLoggable(Level.INFO)) {
 			logger.info("problem '" + problem.getId() + "': " + info);
