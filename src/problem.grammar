@@ -67,6 +67,7 @@ Tokens
   keyword_addition = 'add';
   keyword_subtraction = 'sub';
   keyword_multiplication = 'mul';
+  keyword_division = 'div';
   keyword_greater = 'gt';
   keyword_greater_equal = 'gte';
   keyword_lesser = 'lt';
@@ -199,7 +200,8 @@ Productions
   intexpr_binop =
       {add}       keyword_addition
     | {sub}       keyword_subtraction
-    | {mul}       keyword_multiplication;  
+    | {mul}       keyword_multiplication
+    | {div}       keyword_division;  
 
   request = keyword_request [problem]:identifier [size]:number reqtype [al]:parenl [arguments]:argument* [ar]:parenr;
   argument = parenl identifier [tuples]:tuple* parenr;

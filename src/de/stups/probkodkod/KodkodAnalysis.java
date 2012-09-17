@@ -48,6 +48,7 @@ import de.stups.probkodkod.parser.node.AConstInnerexpression;
 import de.stups.probkodkod.parser.node.AConstInnerformula;
 import de.stups.probkodkod.parser.node.AConstInnerintexpression;
 import de.stups.probkodkod.parser.node.ADiffExprBinop;
+import de.stups.probkodkod.parser.node.ADivIntexprBinop;
 import de.stups.probkodkod.parser.node.AEmptyExprConst;
 import de.stups.probkodkod.parser.node.AEqualsIntCompOp;
 import de.stups.probkodkod.parser.node.AEqualsLogopRel;
@@ -195,6 +196,7 @@ public class KodkodAnalysis extends DepthFirstAdapter {
 		BININTEXPROPS.put(ASubIntexprBinop.class.getName(), IntOperator.MINUS);
 		BININTEXPROPS.put(AMulIntexprBinop.class.getName(),
 				IntOperator.MULTIPLY);
+		BININTEXPROPS.put(ADivIntexprBinop.class.getName(), IntOperator.DIVIDE);
 
 		BININTCOMPS.put(AEqualsIntCompOp.class.getName(), IntCompOperator.EQ);
 		BININTCOMPS.put(AGreaterIntCompOp.class.getName(), IntCompOperator.GT);
