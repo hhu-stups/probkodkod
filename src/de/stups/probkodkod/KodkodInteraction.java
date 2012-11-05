@@ -4,6 +4,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.Reader;
 import java.util.logging.FileHandler;
@@ -12,6 +13,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
+import kodkod.engine.satlab.SATFactory;
 import de.prob.prolog.output.IPrologTermOutput;
 import de.prob.prolog.output.PrologTermOutput;
 import de.stups.probkodkod.parser.lexer.Lexer;
@@ -74,7 +76,7 @@ public class KodkodInteraction {
 			filehandler.setFormatter(new SimpleFormatter());
 			logger.setUseParentHandlers(false);
 			logger.addHandler(filehandler);
-			logger.setLevel(Level.SEVERE);
+			logger.setLevel(Level.INFO);
 
 			final FileWriter fw = createDumpFile();
 			final Reader in;
@@ -91,6 +93,8 @@ public class KodkodInteraction {
 						System.out), merge.createWriter("Kodkod:")));
 			}
 
+			is_up_and_running(System.out);
+
 			KodkodInteraction interaction = new KodkodInteraction();
 			interaction.interaction(in, out);
 
@@ -101,6 +105,11 @@ public class KodkodInteraction {
 			logger.severe(e.toString());
 			e.printStackTrace();
 		}
+	}
+
+	private static void is_up_and_running(PrintStream out) {
+		SATFactory satfac = SolverChecker.determineSatFactory();
+		out.println("ProB-Kodkod started: " + satfac.toString());
 	}
 
 	protected static FileWriter createDumpFile() throws IOException {
