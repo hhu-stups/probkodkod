@@ -41,12 +41,10 @@ public class TupleType {
 
 		final List<Integer> lower = new ArrayList<Integer>(arity);
 		final List<Integer> upper = new ArrayList<Integer>(arity);
-		int i = 0;
 		for (final Type type : types) {
 			final IntegerIntervall atomRange = type.getInterval();
 			lower.add(atomRange.getLower());
 			upper.add(atomRange.getUpper());
-			i++;
 		}
 		this.lower = Collections.unmodifiableList(lower);
 		this.upper = Collections.unmodifiableList(upper);
