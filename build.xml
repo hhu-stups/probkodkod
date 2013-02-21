@@ -16,6 +16,7 @@
 	<property name="junit" value="${lib}/junit-4.8.2.jar"/>
 	<property name="uptodate" value="uptodate"/>
 	<property name="testresultdir" value="${build}/testresult"/>
+	<property name="target" value="1.5"/>
 	
 	<taskdef name="sablecc" classname="org.sablecc.ant.taskdef.Sablecc"/>
 	
@@ -44,8 +45,8 @@
 
 	<target name="compile" depends="init,parser">
 		<!-- Compile the java code -->
-		<javac srcdir="${parser}" destdir="${jar}" debug="true"/>
-		<javac srcdir="${src}" destdir="${jar}" debug="true">
+		<javac srcdir="${parser}" destdir="${jar}" debug="true" target="${target}"/>
+		<javac srcdir="${src}" destdir="${jar}" debug="true" target="${target}">
 			<classpath location="${kodkod}"/>
 			<classpath location="${prolog}"/>
 		</javac>
@@ -59,7 +60,7 @@
 	
 	<target name="compiletests" depends="compile">
 		<mkdir dir="${testbin}"/>
-		<javac srcdir="${test}" destdir="${testbin}" debug="true">
+		<javac srcdir="${test}" destdir="${testbin}" debug="true" target="${target}">
 			<classpath location="${kodkod}"/>
 			<classpath location="${prolog}"/>
 			<classpath location="${junit}"/>
