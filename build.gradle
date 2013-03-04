@@ -1,9 +1,22 @@
 project.version = '1.0.1-SNAPSHOT';
 project.group = 'de.stups'
 
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'eu.appsatori:gradle-fatjar-plugin:0.2-rc1'
+    }
+}
+
+
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'maven'
+apply plugin: 'fatjar'
+
 
 repositories {
     maven {
@@ -55,18 +68,17 @@ test {
 
 }
 
-
 jar {
-    from(configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }) {
-        exclude "META-INF/*.SF"
-        exclude "META-INF/*.DSA"
-        exclude "META-INF/*.RSA"
-    }
-
-    manifest {
-        attributes 'Implementation-Title': 'ProB Kodkod',
-                'Implementation-Version': project.version,
-                'Built-Date': new Date(),
-                'Built-JDK': System.getProperty('java.version')
-    }
+ include '**/*.class'
+ include '**/*.java'
+ exclude '**.*.scc' 
+ from 'build/temp'
+ include '**/*.dat'
+ include '**/*.properties'
+ from configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
 }
+
+
+
+
+
