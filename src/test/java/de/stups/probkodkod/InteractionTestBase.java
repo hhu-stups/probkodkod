@@ -57,7 +57,7 @@ public class InteractionTestBase {
 	}
 
 	protected static String load(final String filename) throws IOException {
-		InputStream input = KodkodTest.class.getResourceAsStream("problems/"
+		InputStream input = KodkodTest.class.getClassLoader().getResourceAsStream("problems/"
 				+ filename);
 		int c = input.read();
 		StringBuffer buf = new StringBuffer();

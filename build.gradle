@@ -1,0 +1,72 @@
+project.version = '1.0.1-SNAPSHOT';
+project.group = 'de.stups'
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'maven'
+
+repositories {
+    maven {
+      name "cobra"
+      url "http://cobra.cs.uni-duesseldorf.de/artifactory/repo"
+    }
+}
+configurations {
+    sablecc
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ['build/temp','src/main/java']
+        }
+    }
+}
+
+sourceSets.test.runtimeClasspath += files(sourceSets.main.java.srcDirs) 
+
+
+dependencies {
+    sablecc(group: 'de.stups', name: 'sablecc', version: '3.2.7-SNAPSHOT', changing: true)
+    compile 'de.prob:prologlib:2.4.15'  
+    compile 'kodkod:kodkod:1.0.0'
+    compile 'org.sat4j:org.sat4j.core:2.3.1'
+    testCompile 'junit:junit:4.8.2'
+ }
+
+ task genParser(type:JavaExec) {
+    doFirst{ file('build/temp').mkdirs() }
+    inputs.dir new File('src/main/resources')
+    outputs.dir new File('build/temp')
+    main = 'org.sablecc.sablecc.SableCC'
+    classpath = configurations.sablecc
+    maxHeapSize = '1024m'
+    args = ['-d','build/temp','src/main/resources/problem.grammar']
+}
+
+compileJava { 
+ dependsOn = ['genParser'] 
+}
+
+test {
+  doFirst {
+    println "testing"
+  }
+
+}
+
+
+jar {
+    from(configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }) {
+        exclude "META-INF/*.SF"
+        exclude "META-INF/*.DSA"
+        exclude "META-INF/*.RSA"
+    }
+
+    manifest {
+        attributes 'Implementation-Title': 'ProB Kodkod',
+                'Implementation-Version': project.version,
+                'Built-Date': new Date(),
+                'Built-JDK': System.getProperty('java.version')
+    }
+}
