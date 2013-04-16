@@ -41,7 +41,7 @@ sourceSets.test.runtimeClasspath += files(sourceSets.main.java.srcDirs)
 
 dependencies {
     sablecc(group: 'de.stups', name: 'sablecc', version: '3.2.7-SNAPSHOT', changing: true)
-    compile 'de.prob:prologlib:2.4.15'  
+    compile 'de.prob:prologlib:2.4.17'  
     compile 'kodkod:kodkod:1.0.0'
     compile 'org.sat4j:org.sat4j.core:2.3.1'
     testCompile 'junit:junit:4.8.2'
