@@ -63,40 +63,49 @@ public final class Request {
 	 *         have been send to the stream
 	 */
 	public boolean writeNextSolutions(final IPrologTermOutput pto, final int max) {
-		boolean solutionsPresent = true;
-		int num;
-		int size = 0;
-		long durations[] = new long[max];
-		Instance[] solutions = new Instance[max];
-		for (num = 0; solutionsPresent & num < max; num++) {
-			final long start = System.currentTimeMillis();
-			final Instance instance = nextInstance();
-			durations[num] = System.currentTimeMillis() - start;
-			solutionsPresent = instance != null;
-			if (solutionsPresent) {
-				solutions[num] = instance;
-				size++;
+		try {
+			boolean solutionsPresent = true;
+			int num;
+			int size = 0;
+			long durations[] = new long[max];
+			Instance[] solutions = new Instance[max];
+			for (num = 0; solutionsPresent & num < max; num++) {
+				final long start = System.currentTimeMillis();
+				final Instance instance = nextInstance();
+				durations[num] = System.currentTimeMillis() - start;
+				solutionsPresent = instance != null;
+				if (solutionsPresent) {
+					solutions[num] = instance;
+					size++;
+				}
 			}
-		}
 
-		pto.openTerm("solutions");
-		printInstances(solutions, pto);
+			pto.openTerm("solutions");
+			printInstances(solutions, pto);
 
-		pto.printAtom(solutionsPresent ? "more" : "all");
-		pto.openList();
-		long duration = 0;
-		for (int i = 0; i < size; i++) {
-			pto.printNumber(durations[i]);
-			duration += durations[i];
+			pto.printAtom(solutionsPresent ? "more" : "all");
+			pto.openList();
+			long duration = 0;
+			for (int i = 0; i < size; i++) {
+				pto.printNumber(durations[i]);
+				duration += durations[i];
+			}
+			pto.closeList();
+			pto.closeTerm();
+			pto.fullstop();
+			if (logger.isLoggable(Level.FINE)) {
+				logger.fine("wrote " + num + " solutions, computed in "
+						+ duration + "ms");
+			}
+			return solutionsPresent;
+		} catch (RuntimeException ex) {
+			// timeout of the solver is wrapped in a runtime exception
+			if ("timed out".equals(ex.getMessage())) {
+				pto.printAtom("sat_timeout");
+				return true;
+			}
+			throw (ex);
 		}
-		pto.closeList();
-		pto.closeTerm();
-		pto.fullstop();
-		if (logger.isLoggable(Level.FINE)) {
-			logger.fine("wrote " + num + " solutions, computed in " + duration
-					+ "ms");
-		}
-		return solutionsPresent;
 	}
 
 	private void printInstances(Instance[] solutions, IPrologTermOutput pto) {
