@@ -1,4 +1,4 @@
-project.version = '1.0.2-SNAPSHOT';
+project.version = '1.0.3-SNAPSHOT';
 project.group = 'de.stups'
 
 buildscript {
@@ -25,11 +25,13 @@ apply plugin: 'com.github.johnrengelman.shadow'
 
 
 repositories {
+    mavenCentral()
     maven {
       name "cobra"
       url "http://cobra.cs.uni-duesseldorf.de/artifactory/repo"
     }
 }
+
 configurations {
     sablecc
 }
@@ -47,9 +49,9 @@ sourceSets.test.runtimeClasspath += files(sourceSets.main.java.srcDirs)
 
 dependencies {
     sablecc(group: 'de.stups', name: 'sablecc', version: '3.2.7-SNAPSHOT', changing: true)
-    compile 'de.prob:prologlib:2.4.17'
-    compile 'kodkod:kodkod:1.0.0'
-    compile 'org.sat4j:org.sat4j.core:2.3.1'
+    compile 'de.hhu.stups:prologlib:2.4.40'
+    compile 'kodkod:kodkod:2.0.0'
+    compile 'org.ow2.sat4j:org.ow2.sat4j.core:2.3.5'
     testCompile 'junit:junit:4.8.2'
  }
 
