@@ -4,18 +4,24 @@ project.group = 'de.stups'
 buildscript {
     repositories {
         mavenCentral()
+        jcenter()
     }
 
     dependencies {
-        classpath 'eu.appsatori:gradle-fatjar-plugin:0.2-rc1'
+    //    classpath 'eu.appsatori:gradle-fatjar-plugin:0.2-rc1'
+        classpath 'com.github.jengelman.gradle.plugins:shadow:1.2.2'
     }
 }
+
+
 
 
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'maven'
-apply plugin: 'fatjar'
+//apply plugin: 'fatjar'
+apply plugin: 'application'
+apply plugin: 'com.github.johnrengelman.shadow'
 
 
 repositories {
@@ -36,12 +42,12 @@ sourceSets {
     }
 }
 
-sourceSets.test.runtimeClasspath += files(sourceSets.main.java.srcDirs) 
+sourceSets.test.runtimeClasspath += files(sourceSets.main.java.srcDirs)
 
 
 dependencies {
     sablecc(group: 'de.stups', name: 'sablecc', version: '3.2.7-SNAPSHOT', changing: true)
-    compile 'de.prob:prologlib:2.4.17'  
+    compile 'de.prob:prologlib:2.4.17'
     compile 'kodkod:kodkod:1.0.0'
     compile 'org.sat4j:org.sat4j.core:2.3.1'
     testCompile 'junit:junit:4.8.2'
@@ -57,8 +63,8 @@ dependencies {
     args = ['-d','build/temp','src/main/resources/problem.grammar']
 }
 
-compileJava { 
- dependsOn = ['genParser'] 
+compileJava {
+ dependsOn = ['genParser']
 }
 
 test {
@@ -68,17 +74,19 @@ test {
 
 }
 
+mainClassName = 'de.stups.probkodkod.KodkodInteraction'
+
 jar {
+ manifest {
+       attributes 'Main-Class': mainClassName,
+                  'Implementation-Title': 'ProB Kodkod',
+                  'Implementation-Version': project.version
+   }
  include '**/*.class'
  include '**/*.java'
- exclude '**.*.scc' 
+ exclude '**.*.scc'
  from 'build/temp'
  include '**/*.dat'
  include '**/*.properties'
  from configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
 }
-
-
-
-
-
