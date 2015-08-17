@@ -102,6 +102,7 @@ public final class Request {
 			// timeout of the solver is wrapped in a runtime exception
 			if ("timed out".equals(ex.getMessage())) {
 				pto.printAtom("sat_timeout");
+				pto.fullstop();
 				return true;
 			}
 			throw (ex);

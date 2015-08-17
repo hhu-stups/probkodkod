@@ -57,8 +57,8 @@ public class InteractionTestBase {
 	}
 
 	protected static String load(final String filename) throws IOException {
-		InputStream input = KodkodTest.class.getClassLoader().getResourceAsStream("problems/"
-				+ filename);
+		InputStream input = KodkodTest.class.getClassLoader()
+				.getResourceAsStream("problems/" + filename);
 		int c = input.read();
 		StringBuffer buf = new StringBuffer();
 		while (c >= 0) {
@@ -161,6 +161,12 @@ public class InteractionTestBase {
 	protected void checkUnknown(final String problem) throws IOException {
 		final CompoundPrologTerm expected = new CompoundPrologTerm("unknown",
 				new CompoundPrologTerm(problem));
+		assertEquals(expected, answer);
+	}
+
+	protected void checkSATTimeout() throws IOException {
+		final CompoundPrologTerm expected = new CompoundPrologTerm(
+				"sat_timeout");
 		assertEquals(expected, answer);
 	}
 
