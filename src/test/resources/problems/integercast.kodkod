@@ -1,4 +1,4 @@
-problem integercast
+problem integercast 3500
 
 ((inttype (si 0 7) (ai 0 9)))
 

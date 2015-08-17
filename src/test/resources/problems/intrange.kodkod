@@ -1,4 +1,4 @@
-problem intrange
+problem intrange 3500
 
 ((inttype (p2i 0 8) (is 0 8)))
  

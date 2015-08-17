@@ -253,7 +253,8 @@ public class KodkodAnalysis extends DepthFirstAdapter {
 		node.getFormula().apply(this);
 		problem.setFormula(formulaStack.pop());
 
-		session.addProblem(problem.createImmutable());
+		long timeout = Long.parseLong(node.getTimeout().getText());
+		session.addProblem(problem.createImmutable(), timeout);
 	}
 
 	private void registerTypes(final Collection<PType> types) {

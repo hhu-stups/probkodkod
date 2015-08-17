@@ -99,7 +99,7 @@ Productions
     | {reset}   reset
     | {none};
 
-  problem = keyword_problem [id]:identifier
+  problem = keyword_problem [id]:identifier [timeout]:number
     [tpl]:parenl [types]:type* [tpr]:parenr
     [rpl]:parenl [relations]:relation* [rpr]:parenr formula;
     

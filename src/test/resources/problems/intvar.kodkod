@@ -1,4 +1,4 @@
-problem intvar
+problem intvar 3500
 
 ((inttype (si 0 7)))
 

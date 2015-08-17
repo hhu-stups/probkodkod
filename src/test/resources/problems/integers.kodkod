@@ -1,4 +1,4 @@
-problem integers
+problem integers 3500
 
 ((inttype (si 0 2))
  (w 2))

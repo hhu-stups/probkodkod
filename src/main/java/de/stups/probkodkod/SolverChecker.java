@@ -15,6 +15,7 @@ import kodkod.engine.Solver;
 import kodkod.engine.satlab.SATFactory;
 import kodkod.instance.Bounds;
 import kodkod.instance.Universe;
+import de.stups.probkodkod.sat.SAT4JWithTimeoutFactory;
 
 /**
  * Here we determine if we use Minisat or SAT4J as back-end. We do this by
@@ -25,8 +26,11 @@ import kodkod.instance.Universe;
 public class SolverChecker {
 	private static final Logger LOGGER = Logger
 			.getLogger("de.stups.probkodkod");
-	private static final SATFactory[] FACTORIES = { SATFactory.MiniSat,
-			SATFactory.DefaultSAT4J };
+	private static final SATFactory[] FACTORIES = { new SAT4JWithTimeoutFactory() };
+
+	// private static final SATFactory[] FACTORIES = {
+	// new SAT4JWithTimeoutFactory(), SATFactory.MiniSat,
+	// SATFactory.DefaultSAT4J };
 
 	public static SATFactory determineSatFactory() {
 		Map<String, Throwable> throwables = new HashMap<String, Throwable>();

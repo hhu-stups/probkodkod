@@ -6,9 +6,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import kodkod.engine.Solver;
-import kodkod.engine.satlab.SATFactory;
 import kodkod.instance.TupleSet;
 import de.prob.prolog.output.IPrologTermOutput;
+import de.stups.probkodkod.sat.SAT4JWithTimeoutFactory;
 
 /**
  * The session contains all the information that is needed during an interaction
@@ -21,7 +21,7 @@ import de.prob.prolog.output.IPrologTermOutput;
  * 
  */
 public class KodkodSession {
-	private final SATFactory SOLVER = SolverChecker.determineSatFactory();
+	// private final SATFactory SOLVER = SolverChecker.determineSatFactory();
 
 	private final Logger logger = Logger.getLogger(KodkodSession.class
 			.getName());
@@ -30,12 +30,12 @@ public class KodkodSession {
 	private final Map<ImmutableProblem, Request> currentRequests = new HashMap<ImmutableProblem, Request>();
 	private boolean stopped = false;
 
-	public void addProblem(final ImmutableProblem problem) {
+	public void addProblem(final ImmutableProblem problem, long timeout) {
 		String id = problem.getId();
 		problems.put(id, problem);
 
 		final Solver solver = new Solver();
-		solver.options().setSolver(SOLVER);
+		solver.options().setSolver(new SAT4JWithTimeoutFactory(timeout));
 		solver.options().setSymmetryBreaking(0);
 		final Integer bitwidth = problem.getBitwidth();
 		if (bitwidth != null) {

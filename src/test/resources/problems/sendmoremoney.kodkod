@@ -1,4 +1,6 @@
-problem sendmoremoney ((inttype(p2i 0 199980)))
+problem sendmoremoney 3500
+
+((inttype(p2i 0 199980)))
 
 ( (s singleton subset p2i)
   (e singleton subset p2i)
