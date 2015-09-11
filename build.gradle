@@ -56,22 +56,22 @@ test {
 mainClassName = 'de.stups.probkodkod.KodkodInteraction'
 
 
-/*
-jar {
- manifest {
-       attributes 'Main-Class': mainClassName,
-                  'Implementation-Title': 'ProB Kodkod',
-                  'Implementation-Version': project.version
-   }
- include '**/*.class'
- include '**/*.java'
- exclude '**.*.scc'
- from 'build/temp'
- include '**/*.dat'
- include '**/*.properties'
- from configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
-}
-*/
+
+//jar {
+// manifest {
+//       attributes 'Main-Class': mainClassName,
+//                  'Implementation-Title': 'ProB Kodkod',
+//                  'Implementation-Version': project.version
+//   }
+// include '**/*.class'
+// include '**/*.java'
+// exclude '**.*.scc'
+// from 'build/temp'
+// include '**/*.dat'
+// include '**/*.properties'
+// from configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+//}
+
 
 if (project.hasProperty('ossrhUsername') && project.hasProperty('ossrhPassword')) {
 
