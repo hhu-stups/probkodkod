@@ -25,7 +25,7 @@ sourceSets {
 sourceSets.test.runtimeClasspath += files(sourceSets.main.java.srcDirs)
 
 dependencies {
-    sablecc(group: 'de.stups', name: 'sablecc', version: '3.2.7-SNAPSHOT', changing: true)
+    sablecc(group: 'de.hhu.stups', name: 'sablecc', version: '3.2.10')
     compile 'de.hhu.stups:prologlib:2.4.40'
     compile 'kodkod:kodkod:2.0.0'
     compile 'org.ow2.sat4j:org.ow2.sat4j.core:2.3.5'
