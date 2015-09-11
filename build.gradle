@@ -8,6 +8,9 @@ apply plugin: 'application'
 
 repositories {
     mavenCentral()
+    flatDir {
+       dirs 'libs'
+   }
 }
 
 configurations {
@@ -25,9 +28,9 @@ sourceSets {
 sourceSets.test.runtimeClasspath += files(sourceSets.main.java.srcDirs)
 
 dependencies {
-    sablecc(group: 'de.hhu.stups', name: 'sablecc', version: '3.2.10')
+    sablecc 'de.hhu.stups:sablecc:3.2.10'
     compile 'de.hhu.stups:prologlib:2.4.40'
-    compile 'kodkod:kodkod:2.0.0'
+    compile name: 'kodkod'
     compile 'org.ow2.sat4j:org.ow2.sat4j.core:2.3.5'
     testCompile 'junit:junit:4.8.2'
  }
@@ -55,23 +58,24 @@ test {
 
 mainClassName = 'de.stups.probkodkod.KodkodInteraction'
 
+javadoc {
+  failOnError= false
+}
 
-
-//jar {
-// manifest {
-//       attributes 'Main-Class': mainClassName,
-//                  'Implementation-Title': 'ProB Kodkod',
-//                  'Implementation-Version': project.version
-//   }
-// include '**/*.class'
-// include '**/*.java'
-// exclude '**.*.scc'
-// from 'build/temp'
-// include '**/*.dat'
-// include '**/*.properties'
-// from configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
-//}
-
+jar {
+ manifest {
+       attributes 'Main-Class': mainClassName,
+                  'Implementation-Title': 'ProB Kodkod',
+                  'Implementation-Version': project.version
+   }
+ include '**/*.class'
+ include '**/*.java'
+ exclude '**.*.scc'
+ from 'build/temp'
+ include '**/*.dat'
+ include '**/*.properties'
+ from configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+}
 
 if (project.hasProperty('ossrhUsername') && project.hasProperty('ossrhPassword')) {
 
