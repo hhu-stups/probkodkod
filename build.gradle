@@ -114,23 +114,23 @@ uploadArchives {
       }
 
       pom.project {
-        name 'TLA+ to B-AST'
+        name 'ProB Kodkod'
         packaging 'jar'
         // optionally artifactId can be defined here
-        description "Translator from TLA+ to ProB's AST representation."
-        url 'https://github.com/hhu-stups/tla2bAST'
+        description "Wrapper to use Kodkod in ProB."
+        url 'https://github.com/hhu-stups/probkodkod'
 
         licenses {
-          license {
-            name 'Eclipse Public License, Version 1.0'
-            url 'https://www.eclipse.org/legal/epl-v10.html'
-          }
-        }
+      				 license {
+      					 name 'MIT License'
+      					 url 'http://research.microsoft.com/en-us/um/people/lamport/tla/license.html'
+      				 }
+      			 }
 
         scm {
-          connection 'scm:git:git://github.com/hhu-stups/tla2bAST.git'
-          developerConnection 'scm:git:git@github.com:hhu-stups/tla2bAST.git'
-          url 'https://github.com/hhu-stups/tla2bAST'
+          connection 'scm:git:git://github.com/hhu-stups/probkodkod.git'
+          developerConnection 'scm:git:git@github.com:hhu-stups/probkodkod.git'
+          url 'https://github.com/hhu-stups/probkodkod'
         }
 
 
