@@ -17,6 +17,11 @@ configurations {
     sablecc
 }
 
+configurations {
+    kodkod
+}
+
+
 sourceSets {
     main {
         java {
@@ -30,7 +35,7 @@ sourceSets.test.runtimeClasspath += files(sourceSets.main.java.srcDirs)
 dependencies {
     sablecc 'de.hhu.stups:sablecc:3.2.10'
     compile 'de.hhu.stups:prologlib:2.4.40'
-    compile name: 'kodkod'
+    kodkod name: 'kodkod'
     compile 'org.ow2.sat4j:org.ow2.sat4j.core:2.3.5'
     testCompile 'junit:junit:4.8.2'
  }
@@ -47,6 +52,7 @@ task genParser(type:JavaExec) {
 
 compileJava {
  dependsOn = ['genParser']
+ compileClasspath += kodkod
 }
 
 test {
