@@ -30,6 +30,7 @@ sourceSets {
     }
 }
 
+sourceSets.main.compileClasspath += kodkod
 sourceSets.test.runtimeClasspath += files(sourceSets.main.java.srcDirs)
 
 dependencies {
@@ -52,7 +53,6 @@ task genParser(type:JavaExec) {
 
 compileJava {
  dependsOn = ['genParser']
- compileClasspath += kodkod
 }
 
 test {
