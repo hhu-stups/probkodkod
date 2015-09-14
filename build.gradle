@@ -30,7 +30,7 @@ sourceSets {
     }
 }
 
-sourceSets.main.compileClasspath += kodkod
+sourceSets.main.compileClasspath += configurations.kodkod
 sourceSets.test.runtimeClasspath += files(sourceSets.main.java.srcDirs)
 
 dependencies {
@@ -81,6 +81,7 @@ jar {
  include '**/*.dat'
  include '**/*.properties'
  from configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+ from configurations.kodkod.collect { it.isDirectory() ? it : zipTree(it) }
 }
 
 if (project.hasProperty('ossrhUsername') && project.hasProperty('ossrhPassword')) {
