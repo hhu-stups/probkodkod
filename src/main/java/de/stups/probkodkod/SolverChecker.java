@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import de.stups.probkodkod.sat.SAT4JWithTimeoutFactory;
 import kodkod.ast.Formula;
 import kodkod.ast.IntConstant;
 import kodkod.ast.Relation;
@@ -15,7 +16,6 @@ import kodkod.engine.Solver;
 import kodkod.engine.satlab.SATFactory;
 import kodkod.instance.Bounds;
 import kodkod.instance.Universe;
-import de.stups.probkodkod.sat.SAT4JWithTimeoutFactory;
 
 /**
  * Here we determine if we use Minisat or SAT4J as back-end. We do this by
@@ -24,9 +24,8 @@ import de.stups.probkodkod.sat.SAT4JWithTimeoutFactory;
  * @author plagge
  */
 public class SolverChecker {
-	private static final Logger LOGGER = Logger
-			.getLogger("de.stups.probkodkod");
-	private static final SATFactory[] FACTORIES = { new SAT4JWithTimeoutFactory() };
+	private static final Logger LOGGER = Logger.getLogger("de.stups.probkodkod");
+	private static final SATFactory[] FACTORIES = { SATFactory.MiniSat, new SAT4JWithTimeoutFactory() };
 
 	// private static final SATFactory[] FACTORIES = {
 	// new SAT4JWithTimeoutFactory(), SATFactory.MiniSat,
@@ -48,8 +47,7 @@ public class SolverChecker {
 		}
 		LOGGER.severe("No SAT solver back-end found.");
 		for (final Map.Entry<String, Throwable> entry : throwables.entrySet()) {
-			final String msg = "Error when trying to use solver: "
-					+ entry.getKey();
+			final String msg = "Error when trying to use solver: " + entry.getKey();
 			LOGGER.log(Level.SEVERE, msg, entry.getValue());
 		}
 		throw new Error("No SAT solver back-end for Kodkod found.");
