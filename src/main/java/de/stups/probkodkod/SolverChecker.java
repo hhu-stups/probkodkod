@@ -25,7 +25,8 @@ import kodkod.instance.Universe;
  */
 public class SolverChecker {
 	private static final Logger LOGGER = Logger.getLogger("de.stups.probkodkod");
-	private static final SATFactory[] FACTORIES = { SATFactory.MiniSat, new SAT4JWithTimeoutFactory() };
+	private static final SATFactory[] FACTORIES = { SATFactory.Lingeling, SATFactory.Glucose, SATFactory.MiniSat,
+			new SAT4JWithTimeoutFactory() };
 
 	// private static final SATFactory[] FACTORIES = {
 	// new SAT4JWithTimeoutFactory(), SATFactory.MiniSat,
