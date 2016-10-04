@@ -1,4 +1,4 @@
-project.version = '1.0.5-SNAPSHOT';
+project.version = '1.0.5';
 project.group = 'de.hhu.stups'
 
 apply plugin: 'java'
