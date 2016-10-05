@@ -275,7 +275,7 @@ public class KodkodAnalysis extends DepthFirstAdapter {
 
 	/**
 	 * A request has been entered. It will be added to the {@link KodkodSession}
-	 * and the first solutions will be send directly.
+	 * and the first solutions will be sent directly.
 	 */
 	@Override
 	public void caseARequest(final ARequest node) {
@@ -283,7 +283,7 @@ public class KodkodAnalysis extends DepthFirstAdapter {
 		final ImmutableProblem problem = session.getProblem(problemId);
 		if (problem != null) {
 			final boolean signum = getSignum(node.getReqtype());
-			int size = extractInt(node.getSize());
+			int size = extractInt(node.getSize());  // the maximum number of solutions to be computed
 			final Map<String, TupleSet> args = extractArguments(
 					node.getArguments(), problem);
 			session.request(problem, signum, args);
@@ -301,7 +301,7 @@ public class KodkodAnalysis extends DepthFirstAdapter {
 		final String id = extractIdentifier(node.getProblem());
 		final ImmutableProblem problem = session.getProblem(id);
 		if (problem != null) {
-			final int size = extractInt(node.getSize());
+			final int size = extractInt(node.getSize()); // the maximum number of solutions to be computed
 			session.writeNextSolutions(problem, size, pto);
 		}
 	}

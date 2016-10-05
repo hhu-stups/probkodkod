@@ -36,7 +36,7 @@ public class KodkodSession {
 
 		final Solver solver = new Solver();
 		solver.options().setSolver(new SAT4JWithTimeoutFactory(timeout));
-		solver.options().setSymmetryBreaking(0);
+		solver.options().setSymmetryBreaking(0); // TO DO: provide preference for this; default int value for Kodkod is 20
 		final Integer bitwidth = problem.getBitwidth();
 		if (bitwidth != null) {
 			solver.options().setBitwidth(bitwidth);
@@ -65,6 +65,7 @@ public class KodkodSession {
 		return problems.get(problemId);
 	}
 
+    // size is the max number of solutions found
 	public boolean writeNextSolutions(final ImmutableProblem problem,
 			final int size, final IPrologTermOutput pto) {
 		Request request = currentRequests.get(problem);
