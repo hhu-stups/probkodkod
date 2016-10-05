@@ -5,10 +5,11 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import kodkod.engine.Solver;
-import kodkod.instance.TupleSet;
 import de.prob.prolog.output.IPrologTermOutput;
 import de.stups.probkodkod.sat.SAT4JWithTimeoutFactory;
+import kodkod.engine.Solver;
+import kodkod.engine.satlab.SATFactory;
+import kodkod.instance.TupleSet;
 
 /**
  * The session contains all the information that is needed during an interaction
@@ -23,20 +24,35 @@ import de.stups.probkodkod.sat.SAT4JWithTimeoutFactory;
 public class KodkodSession {
 	// private final SATFactory SOLVER = SolverChecker.determineSatFactory();
 
-	private final Logger logger = Logger.getLogger(KodkodSession.class
-			.getName());
+	private final Logger logger = Logger.getLogger(KodkodSession.class.getName());
 	private final Map<String, ImmutableProblem> problems = new HashMap<String, ImmutableProblem>();
 	private final Map<ImmutableProblem, Solver> solvers = new HashMap<ImmutableProblem, Solver>();
 	private final Map<ImmutableProblem, Request> currentRequests = new HashMap<ImmutableProblem, Request>();
 	private boolean stopped = false;
 
-	public void addProblem(final ImmutableProblem problem, long timeout) {
+	public void addProblem(final ImmutableProblem problem, long timeout, int symmetry, SATSolver sat) {
 		String id = problem.getId();
 		problems.put(id, problem);
 
 		final Solver solver = new Solver();
-		solver.options().setSolver(new SAT4JWithTimeoutFactory(timeout));
-		solver.options().setSymmetryBreaking(0); // TO DO: provide preference for this; default int value for Kodkod is 20
+		switch (sat) {
+		case sat4j:
+			solver.options().setSolver(new SAT4JWithTimeoutFactory(timeout));
+			break;
+		case glucose:
+			solver.options().setSolver(SATFactory.Glucose);
+			break;
+		case lingeling:
+			solver.options().setSolver(SATFactory.Lingeling);
+			break;
+		case minisat:
+			solver.options().setSolver(SATFactory.MiniSat);
+			break;
+		default:
+			solver.options().setSolver(new SAT4JWithTimeoutFactory(timeout));
+			break;
+		}
+		solver.options().setSymmetryBreaking(symmetry);
 		final Integer bitwidth = problem.getBitwidth();
 		if (bitwidth != null) {
 			solver.options().setBitwidth(bitwidth);
@@ -53,8 +69,7 @@ public class KodkodSession {
 		info(problem, "deleted");
 	}
 
-	public void request(final ImmutableProblem problem, final boolean signum,
-			final Map<String, TupleSet> newBounds) {
+	public void request(final ImmutableProblem problem, final boolean signum, final Map<String, TupleSet> newBounds) {
 		final Solver solver = solvers.get(problem);
 		Request request = problem.createRequest(solver, signum, newBounds);
 		currentRequests.put(problem, request);
@@ -65,13 +80,11 @@ public class KodkodSession {
 		return problems.get(problemId);
 	}
 
-    // size is the max number of solutions found
-	public boolean writeNextSolutions(final ImmutableProblem problem,
-			final int size, final IPrologTermOutput pto) {
+	// size is the max number of solutions found
+	public boolean writeNextSolutions(final ImmutableProblem problem, final int size, final IPrologTermOutput pto) {
 		Request request = currentRequests.get(problem);
 		if (request == null)
-			throw new IllegalArgumentException("No request for "
-					+ problem.getId());
+			throw new IllegalArgumentException("No request for " + problem.getId());
 		info(problem, "list max " + size + " solutions");
 		boolean hasSolutions = request.writeNextSolutions(pto, size);
 		if (!hasSolutions) {
@@ -98,8 +111,7 @@ public class KodkodSession {
 		this.currentRequests.clear();
 		System.gc();
 		long after = Runtime.getRuntime().freeMemory();
-		logger.info("session reseted (" + before
-				+ " bytes of free memory before and " + after
+		logger.info("session reseted (" + before + " bytes of free memory before and " + after
 				+ " bytes after reset (diff: " + (after - before) + " bytes)");
 	}
 

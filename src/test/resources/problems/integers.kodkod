@@ -1,4 +1,4 @@
-problem integers 3500
+problem integers 3500 0 sat4j
 
 ((inttype (si 0 2))
  (w 2))

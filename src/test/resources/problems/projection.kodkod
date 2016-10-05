@@ -1,4 +1,4 @@
-problem projection 3500
+problem projection 3500 0 sat4j
 
 ((world 2))
 

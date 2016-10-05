@@ -1,4 +1,4 @@
-problem loop 3500
+problem loop 3500 0 sat4j
 
  ((Blocks 8))
 

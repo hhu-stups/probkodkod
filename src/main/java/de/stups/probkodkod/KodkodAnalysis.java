@@ -10,24 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
-import kodkod.ast.Decl;
-import kodkod.ast.Decls;
-import kodkod.ast.Expression;
-import kodkod.ast.Formula;
-import kodkod.ast.IntConstant;
-import kodkod.ast.IntExpression;
-import kodkod.ast.Relation;
-import kodkod.ast.Variable;
-import kodkod.ast.operator.ExprCompOperator;
-import kodkod.ast.operator.ExprOperator;
-import kodkod.ast.operator.FormulaOperator;
-import kodkod.ast.operator.IntCastOperator;
-import kodkod.ast.operator.IntCompOperator;
-import kodkod.ast.operator.IntOperator;
-import kodkod.ast.operator.Multiplicity;
-import kodkod.ast.operator.Quantifier;
-import kodkod.instance.TupleSet;
-import kodkod.instance.Universe;
 import de.prob.prolog.output.IPrologTermOutput;
 import de.stups.probkodkod.parser.analysis.DepthFirstAdapter;
 import de.stups.probkodkod.parser.node.AAddIntexprBinop;
@@ -128,6 +110,24 @@ import de.stups.probkodkod.parser.node.TIdentifier;
 import de.stups.probkodkod.parser.node.TNumber;
 import de.stups.probkodkod.types.TupleType;
 import de.stups.probkodkod.types.Type;
+import kodkod.ast.Decl;
+import kodkod.ast.Decls;
+import kodkod.ast.Expression;
+import kodkod.ast.Formula;
+import kodkod.ast.IntConstant;
+import kodkod.ast.IntExpression;
+import kodkod.ast.Relation;
+import kodkod.ast.Variable;
+import kodkod.ast.operator.ExprCompOperator;
+import kodkod.ast.operator.ExprOperator;
+import kodkod.ast.operator.FormulaOperator;
+import kodkod.ast.operator.IntCastOperator;
+import kodkod.ast.operator.IntCompOperator;
+import kodkod.ast.operator.IntOperator;
+import kodkod.ast.operator.Multiplicity;
+import kodkod.ast.operator.Quantifier;
+import kodkod.instance.TupleSet;
+import kodkod.instance.Universe;
 
 /**
  * This is a visitor for the syntax tree of an input to the program.
@@ -160,53 +160,41 @@ public class KodkodAnalysis extends DepthFirstAdapter {
 		COMPOPS.put(AInLogopRel.class.getName(), ExprCompOperator.SUBSET);
 		COMPOPS.put(AEqualsLogopRel.class.getName(), ExprCompOperator.EQUALS);
 		BINFORMOPS.put(AOrLogopBinary.class.getName(), FormulaOperator.OR);
-		BINFORMOPS.put(AImpliesLogopBinary.class.getName(),
-				FormulaOperator.IMPLIES);
+		BINFORMOPS.put(AImpliesLogopBinary.class.getName(), FormulaOperator.IMPLIES);
 		BINFORMOPS.put(AIffLogopBinary.class.getName(), FormulaOperator.IFF);
 		QUANTIFIERS.put(AAllQuantifier.class.getName(), Quantifier.ALL);
 		QUANTIFIERS.put(AExistsQuantifier.class.getName(), Quantifier.SOME);
-		QUANTIFIER_FOP.put(AAllQuantifier.class.getName(),
-				FormulaOperator.IMPLIES);
-		QUANTIFIER_FOP.put(AExistsQuantifier.class.getName(),
-				FormulaOperator.AND);
+		QUANTIFIER_FOP.put(AAllQuantifier.class.getName(), FormulaOperator.IMPLIES);
+		QUANTIFIER_FOP.put(AExistsQuantifier.class.getName(), FormulaOperator.AND);
 
-		MULTIEXPROPS.put(AProductExprMultop.class.getName(),
-				ExprOperator.PRODUCT);
+		MULTIEXPROPS.put(AProductExprMultop.class.getName(), ExprOperator.PRODUCT);
 		MULTIEXPROPS.put(AUnionExprMultop.class.getName(), ExprOperator.UNION);
-		MULTIEXPROPS.put(AInterExprMultop.class.getName(),
-				ExprOperator.INTERSECTION);
+		MULTIEXPROPS.put(AInterExprMultop.class.getName(), ExprOperator.INTERSECTION);
 		BINEXPROPS.put(ADiffExprBinop.class.getName(), ExprOperator.DIFFERENCE);
 		BINEXPROPS.put(AJoinExprBinop.class.getName(), ExprOperator.JOIN);
-		BINEXPROPS.put(AOverwriteExprBinop.class.getName(),
-				ExprOperator.OVERRIDE);
+		BINEXPROPS.put(AOverwriteExprBinop.class.getName(), ExprOperator.OVERRIDE);
 		UNEXPROPS.put(AClosureExprUnop.class.getName(), ExprOperator.CLOSURE);
-		UNEXPROPS.put(ATransposeExprUnop.class.getName(),
-				ExprOperator.TRANSPOSE);
-		MULTIPLICITIES
-				.put(ALoneMultiplicity.class.getName(), Multiplicity.LONE);
+		UNEXPROPS.put(ATransposeExprUnop.class.getName(), ExprOperator.TRANSPOSE);
+		MULTIPLICITIES.put(ALoneMultiplicity.class.getName(), Multiplicity.LONE);
 		MULTIPLICITIES.put(ANoMultiplicity.class.getName(), Multiplicity.NO);
 		MULTIPLICITIES.put(AOneMultiplicity.class.getName(), Multiplicity.ONE);
 		MULTIPLICITIES.put(ASetMultiplicity.class.getName(), Multiplicity.SET);
-		MULTIPLICITIES
-				.put(ASomeMultiplicity.class.getName(), Multiplicity.SOME);
+		MULTIPLICITIES.put(ASomeMultiplicity.class.getName(), Multiplicity.SOME);
 		CONSTEXPR.put(AEmptyExprConst.class.getName(), Expression.NONE);
 		CONSTEXPR.put(AIdenExprConst.class.getName(), Expression.IDEN);
 		CONSTEXPR.put(AUnivExprConst.class.getName(), Expression.UNIV);
 
 		BININTEXPROPS.put(AAddIntexprBinop.class.getName(), IntOperator.PLUS);
 		BININTEXPROPS.put(ASubIntexprBinop.class.getName(), IntOperator.MINUS);
-		BININTEXPROPS.put(AMulIntexprBinop.class.getName(),
-				IntOperator.MULTIPLY);
+		BININTEXPROPS.put(AMulIntexprBinop.class.getName(), IntOperator.MULTIPLY);
 		BININTEXPROPS.put(ADivIntexprBinop.class.getName(), IntOperator.DIVIDE);
 		BININTEXPROPS.put(AModIntexprBinop.class.getName(), IntOperator.MODULO);
 
 		BININTCOMPS.put(AEqualsIntCompOp.class.getName(), IntCompOperator.EQ);
 		BININTCOMPS.put(AGreaterIntCompOp.class.getName(), IntCompOperator.GT);
-		BININTCOMPS.put(AGreaterequalIntCompOp.class.getName(),
-				IntCompOperator.GTE);
+		BININTCOMPS.put(AGreaterequalIntCompOp.class.getName(), IntCompOperator.GTE);
 		BININTCOMPS.put(ALesserIntCompOp.class.getName(), IntCompOperator.LT);
-		BININTCOMPS.put(ALesserequalIntCompOp.class.getName(),
-				IntCompOperator.LTE);
+		BININTCOMPS.put(ALesserequalIntCompOp.class.getName(), IntCompOperator.LTE);
 
 		INTCASTS.put(APow2ExprCast.class.getName(), IntCastOperator.BITSETCAST);
 		INTCASTS.put(AIntsetExprCast.class.getName(), IntCastOperator.INTCAST);
@@ -222,8 +210,7 @@ public class KodkodAnalysis extends DepthFirstAdapter {
 	private final Stack<IntExpression> intExpressionStack = new Stack<IntExpression>();
 	private Map<String, Expression> variables = new HashMap<String, Expression>();
 
-	public KodkodAnalysis(final KodkodSession session,
-			final IPrologTermOutput pto) {
+	public KodkodAnalysis(final KodkodSession session, final IPrologTermOutput pto) {
 		this.session = session;
 		this.pto = pto;
 	}
@@ -254,7 +241,9 @@ public class KodkodAnalysis extends DepthFirstAdapter {
 		problem.setFormula(formulaStack.pop());
 
 		long timeout = Long.parseLong(node.getTimeout().getText());
-		session.addProblem(problem.createImmutable(), timeout);
+		int symmetry = Integer.parseInt(node.getSymmetry().getText());
+		SATSolver sat = SATSolver.valueOf(node.getSatsolver().getText());
+		session.addProblem(problem.createImmutable(), timeout, symmetry, sat);
 	}
 
 	private void registerTypes(final Collection<PType> types) {
@@ -268,8 +257,7 @@ public class KodkodAnalysis extends DepthFirstAdapter {
 				final AIntsType type = (AIntsType) ptype;
 				addIntegerType(type);
 			} else
-				throw new IllegalStateException("unexpected type case "
-						+ ptype.getClass().getName());
+				throw new IllegalStateException("unexpected type case " + ptype.getClass().getName());
 		}
 	}
 
@@ -283,9 +271,9 @@ public class KodkodAnalysis extends DepthFirstAdapter {
 		final ImmutableProblem problem = session.getProblem(problemId);
 		if (problem != null) {
 			final boolean signum = getSignum(node.getReqtype());
-			int size = extractInt(node.getSize());  // the maximum number of solutions to be computed
-			final Map<String, TupleSet> args = extractArguments(
-					node.getArguments(), problem);
+			int size = extractInt(node.getSize()); // the maximum number of
+													// solutions to be computed
+			final Map<String, TupleSet> args = extractArguments(node.getArguments(), problem);
 			session.request(problem, signum, args);
 			session.writeNextSolutions(problem, size, pto);
 		} else {
@@ -301,7 +289,9 @@ public class KodkodAnalysis extends DepthFirstAdapter {
 		final String id = extractIdentifier(node.getProblem());
 		final ImmutableProblem problem = session.getProblem(id);
 		if (problem != null) {
-			final int size = extractInt(node.getSize()); // the maximum number of solutions to be computed
+			final int size = extractInt(node.getSize()); // the maximum number
+															// of solutions to
+															// be computed
 			session.writeNextSolutions(problem, size, pto);
 		}
 	}
@@ -319,16 +309,14 @@ public class KodkodAnalysis extends DepthFirstAdapter {
 		session.reset();
 	}
 
-	private Map<String, TupleSet> extractArguments(final List<PArgument> args,
-			final ImmutableProblem problem) {
+	private Map<String, TupleSet> extractArguments(final List<PArgument> args, final ImmutableProblem problem) {
 		final Map<String, TupleSet> result = new HashMap<String, TupleSet>();
 		final Universe universe = problem.getUniverse();
 		for (final PArgument parg : args) {
 			final AArgument arg = (AArgument) parg;
 			final String id = extractIdentifier(arg.getIdentifier());
 			final RelationInfo info = problem.lookupRelationInfo(id);
-			final TupleSet tupleSet = extractTuples(universe,
-					info.getTupleType(), arg.getTuples());
+			final TupleSet tupleSet = extractTuples(universe, info.getTupleType(), arg.getTuples());
 			result.put(id, tupleSet);
 		}
 		return result;
@@ -357,8 +345,7 @@ public class KodkodAnalysis extends DepthFirstAdapter {
 		final String name = node.getLogopRel().getClass().getName();
 		final ExprCompOperator op = COMPOPS.get(name);
 		if (op == null)
-			throw new IllegalStateException("Unexpected relation operator "
-					+ name);
+			throw new IllegalStateException("Unexpected relation operator " + name);
 		final Expression b = expressionStack.pop();
 		final Expression a = expressionStack.pop();
 		formulaStack.push(a.compare(op, b));
@@ -412,10 +399,8 @@ public class KodkodAnalysis extends DepthFirstAdapter {
 		variables = new HashMap<String, Expression>(variables);
 		final Declaration decls = extractDecls(node.getDecls());
 		node.getFormula().apply(this);
-		final Formula formula = decls.applyFormula(formulaStack.pop(),
-				formulaOp);
-		final Formula quantify = formula.quantify(quantifier,
-				decls.getDeclarations());
+		final Formula formula = decls.applyFormula(formulaStack.pop(), formulaOp);
+		final Formula quantify = formula.quantify(quantifier, decls.getDeclarations());
 		formulaStack.push(quantify);
 		variables = oldVars;
 	}
@@ -425,8 +410,7 @@ public class KodkodAnalysis extends DepthFirstAdapter {
 		final String name = node.getIntCompOp().getClass().getName();
 		final IntCompOperator op = BININTCOMPS.get(name);
 		if (op == null)
-			throw new IllegalStateException(
-					"Unexpected integer comparision operator " + name);
+			throw new IllegalStateException("Unexpected integer comparision operator " + name);
 		final IntExpression b = intExpressionStack.pop();
 		final IntExpression a = intExpressionStack.pop();
 		formulaStack.push(a.compare(op, b));
@@ -446,8 +430,7 @@ public class KodkodAnalysis extends DepthFirstAdapter {
 			} else if (op instanceof APartialLogopFunction) {
 				formula = rel.partialFunction(domain, range);
 			} else
-				throw new IllegalStateException("unexpected function operator "
-						+ op.getClass().getName());
+				throw new IllegalStateException("unexpected function operator " + op.getClass().getName());
 		} else {
 			final Multiplicity mult;
 			if (op instanceof ATotalLogopFunction) {
@@ -455,8 +438,7 @@ public class KodkodAnalysis extends DepthFirstAdapter {
 			} else if (op instanceof APartialLogopFunction) {
 				mult = Multiplicity.LONE;
 			} else
-				throw new IllegalStateException("unexpected function operator "
-						+ op.getClass().getName());
+				throw new IllegalStateException("unexpected function operator " + op.getClass().getName());
 			final Variable v = Variable.nary("__func", domain.arity());
 			final Decl decl = v.declare(Multiplicity.ONE, domain);
 			final Formula subset = obj.in(domain.product(range));
@@ -553,8 +535,7 @@ public class KodkodAnalysis extends DepthFirstAdapter {
 		final String castName = node.getExprCast().getClass().getName();
 		final IntCastOperator op = INTCASTS.get(castName);
 		if (op == null)
-			throw new IllegalStateException("Unexpected integer cast operator "
-					+ castName);
+			throw new IllegalStateException("Unexpected integer cast operator " + castName);
 		expressionStack.push(integer.cast(op));
 	}
 
@@ -573,13 +554,11 @@ public class KodkodAnalysis extends DepthFirstAdapter {
 	}
 
 	@Override
-	public void outABinaryInnerintexpression(
-			final ABinaryInnerintexpression node) {
+	public void outABinaryInnerintexpression(final ABinaryInnerintexpression node) {
 		final String name = node.getIntexprBinop().getClass().getName();
 		final IntOperator op = BININTEXPROPS.get(name);
 		if (op == null)
-			throw new IllegalStateException("Unexpected integer operator "
-					+ name);
+			throw new IllegalStateException("Unexpected integer operator " + name);
 		final IntExpression b = intExpressionStack.pop();
 		final IntExpression a = intExpressionStack.pop();
 		intExpressionStack.push(a.compose(op, b));
@@ -596,8 +575,7 @@ public class KodkodAnalysis extends DepthFirstAdapter {
 		variables = new HashMap<String, Expression>(variables);
 		final Declaration decls = extractDecls(node.getDecls());
 		node.getFormula().apply(this);
-		final Formula formula = decls.applyFormula(formulaStack.pop(),
-				FormulaOperator.AND);
+		final Formula formula = decls.applyFormula(formulaStack.pop(), FormulaOperator.AND);
 		expressionStack.push(formula.comprehension(decls.getDeclarations()));
 		variables = oldVars;
 	}
@@ -618,8 +596,7 @@ public class KodkodAnalysis extends DepthFirstAdapter {
 
 			final Multiplicity multiplicity = MULTIPLICITIES.get(mname);
 			if (multiplicity == null)
-				throw new IllegalStateException("Unexpected multiplicity "
-						+ mname);
+				throw new IllegalStateException("Unexpected multiplicity " + mname);
 			if (arity > 1 && Multiplicity.ONE.equals(multiplicity)) {
 				createRelationDecl(id, arity, expression, declaration);
 			} else {
@@ -629,19 +606,17 @@ public class KodkodAnalysis extends DepthFirstAdapter {
 			node = cons.getDecls();
 		}
 		if (declaration.isEmpty())
-			throw new IllegalStateException(
-					"no declarations in quantified formula");
+			throw new IllegalStateException("no declarations in quantified formula");
 		return declaration;
 	}
 
-	private void createRelationDecl(final String id, final int arity,
-			Expression expression, final Declaration declaration) {
+	private void createRelationDecl(final String id, final int arity, Expression expression,
+			final Declaration declaration) {
 		Expression substitution = null;
 		for (int p = 0; p < arity; p++) {
 			final String tmpId = id + "_#_" + p;
 			final Expression prj = expression.project(IntConstant.constant(p));
-			final Decl tmpDecl = declare(tmpId, 1, Multiplicity.ONE, prj,
-					declaration);
+			final Decl tmpDecl = declare(tmpId, 1, Multiplicity.ONE, prj, declaration);
 			final Variable tmpVar = tmpDecl.variable();
 			if (substitution == null) {
 				substitution = tmpVar;
@@ -653,8 +628,7 @@ public class KodkodAnalysis extends DepthFirstAdapter {
 		declaration.addFormula(substitution.in(expression));
 	}
 
-	private Decl declare(final String id, final int arity,
-			final Multiplicity multiplicity, final Expression expression,
+	private Decl declare(final String id, final int arity, final Multiplicity multiplicity, final Expression expression,
 			final Declaration declaration) {
 		final Variable variable = Variable.nary(id, arity);
 		variables.put(id, variable);
@@ -674,20 +648,17 @@ public class KodkodAnalysis extends DepthFirstAdapter {
 			final Universe universe = problem.getUniverse();
 			final PTupleset tupleset = rel.getElements();
 			final TupleType tupleType = new TupleType(types, isSingleton);
-			final TupleSet ptset = extractTupleSet(universe, tupleset,
-					tupleType);
+			final TupleSet ptset = extractTupleSet(universe, tupleset, tupleType);
 			problem.addRelation(id, isExact, tupleType, ptset);
 		}
 	}
 
-	private void checkSingletonForTypes(final String id,
-			final boolean isSingleton, final Type[] types) {
+	private void checkSingletonForTypes(final String id, final boolean isSingleton, final Type[] types) {
 		if (!isSingleton) {
 			for (final Type type : types) {
 				if (type.oneValueNeedsCompleteTupleSet())
-					throw new IllegalArgumentException("Relation " + id
-							+ " makes use of type " + type
-							+ " but is not declared as singleton");
+					throw new IllegalArgumentException(
+							"Relation " + id + " makes use of type " + type + " but is not declared as singleton");
 			}
 		}
 	}
@@ -699,9 +670,7 @@ public class KodkodAnalysis extends DepthFirstAdapter {
 		} else if (extsub instanceof ASubsetReltype) {
 			result = false;
 		} else
-			throw new IllegalStateException(
-					"unexpected relation type (exact/sub) "
-							+ extsub.getClass().getName());
+			throw new IllegalStateException("unexpected relation type (exact/sub) " + extsub.getClass().getName());
 		return result;
 	}
 
@@ -709,8 +678,7 @@ public class KodkodAnalysis extends DepthFirstAdapter {
 		final APowpart pow2spec = (APowpart) relnode.getPow2();
 		final ABitpart bitsspec = (ABitpart) relnode.getIntatoms();
 		final String pow2Name = extractIdentifier(pow2spec.getId());
-		final IntegerIntervall pow2Interval = new IntegerIntervall(
-				extractInt(pow2spec.getLower()),
+		final IntegerIntervall pow2Interval = new IntegerIntervall(extractInt(pow2spec.getLower()),
 				extractInt(pow2spec.getUpper()));
 		final String bitsName;
 		final IntegerIntervall intsetInterval;
@@ -725,12 +693,10 @@ public class KodkodAnalysis extends DepthFirstAdapter {
 			intsetInterval = null;
 		}
 
-		problem.registerIntegerTypes(pow2Name, bitsName, intsetInterval,
-				pow2Interval);
+		problem.registerIntegerTypes(pow2Name, bitsName, intsetInterval, pow2Interval);
 	}
 
-	private TupleSet extractTupleSet(final Universe universe,
-			final PTupleset node, final TupleType tupleType) {
+	private TupleSet extractTupleSet(final Universe universe, final PTupleset node, final TupleType tupleType) {
 		final TupleSet result;
 		if (node == null) {
 			result = tupleType.createAllTuples(universe);
@@ -749,13 +715,12 @@ public class KodkodAnalysis extends DepthFirstAdapter {
 		return type;
 	}
 
-	private TupleSet extractTuples(final Universe universe,
-			final TupleType tupleType, final Collection<PTuple> ptuples) {
+	private TupleSet extractTuples(final Universe universe, final TupleType tupleType,
+			final Collection<PTuple> ptuples) {
 		if (tupleType.isSingleton()) {
 			if (ptuples.size() != 1)
 				throw new IllegalArgumentException(
-						"singleton type expects exactly one element, but there were "
-								+ ptuples.size());
+						"singleton type expects exactly one element, but there were " + ptuples.size());
 		}
 		final int arity = tupleType.getArity();
 		final Collection<int[]> tuples = new ArrayList<int[]>();
@@ -763,8 +728,8 @@ public class KodkodAnalysis extends DepthFirstAdapter {
 			final ATuple aTuple = (ATuple) pTuple;
 			final int[] numbers = extractNumbers(aTuple.getNumbers());
 			if (numbers.length != arity)
-				throw new IllegalArgumentException("expected " + arity
-						+ "-tuple, but is a " + numbers.length + "-tuple");
+				throw new IllegalArgumentException(
+						"expected " + arity + "-tuple, but is a " + numbers.length + "-tuple");
 			tuples.add(numbers);
 		}
 		return tupleType.createTupleSet(universe, tuples);
@@ -794,8 +759,7 @@ public class KodkodAnalysis extends DepthFirstAdapter {
 			factor = -1;
 			numberNode = ((ANegZnumber) node).getNumber();
 		} else
-			throw new IllegalStateException("Unexpected class "
-					+ node.getClass().getName());
+			throw new IllegalStateException("Unexpected class " + node.getClass().getName());
 		return factor * extractInt(numberNode);
 	}
 

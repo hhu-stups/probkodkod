@@ -1,4 +1,4 @@
-problem sendmoremoney 3500
+problem sendmoremoney 3500 0 sat4j
 
 ((inttype(p2i 0 199980)))
 

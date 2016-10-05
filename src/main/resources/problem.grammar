@@ -81,6 +81,8 @@ Tokens
   keyword_int2intset = 'int2intset';
   keyword_expr2int = 'expr2int';
   
+  satsolver = 'lingeling' | 'sat4j' | 'minisat' | 'glucose';  
+  
   minus = '-';
   
   identifier = (alpha|digit|'_')+;
@@ -99,7 +101,7 @@ Productions
     | {reset}   reset
     | {none};
 
-  problem = keyword_problem [id]:identifier [timeout]:number
+  problem = keyword_problem [id]:identifier [timeout]:number [symmetry]:number satsolver
     [tpl]:parenl [types]:type* [tpr]:parenr
     [rpl]:parenl [relations]:relation* [rpr]:parenr formula;
     

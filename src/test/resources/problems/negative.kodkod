@@ -1,4 +1,4 @@
-problem negative 3500
+problem negative 3500 0 sat4j
 
 ((inttype (p2i -15 15)))
 

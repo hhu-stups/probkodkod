@@ -1,4 +1,4 @@
-problem returnzero 3500
+problem returnzero 3500 0 sat4j
   ( (inttype(p2i 0 0)) )
   
   ( (x singleton subset p2i) )

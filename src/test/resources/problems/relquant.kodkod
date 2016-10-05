@@ -1,4 +1,4 @@
-problem relquant 3500
+problem relquant 3500 0 sat4j
 
  ((d 2) (r 2))
  

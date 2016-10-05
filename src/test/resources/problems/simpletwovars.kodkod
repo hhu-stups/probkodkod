@@ -1,4 +1,4 @@
-problem simpletwovars 3500
+problem simpletwovars 3500 0 sat4j
 
  ((T 2))
 

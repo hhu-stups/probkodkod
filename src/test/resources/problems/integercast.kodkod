@@ -1,4 +1,4 @@
-problem integercast 3500
+problem integercast 3500 0 sat4j
 
 ((inttype (si 0 7) (ai 0 9)))
 
