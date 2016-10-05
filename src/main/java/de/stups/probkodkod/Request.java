@@ -162,14 +162,21 @@ public final class Request {
 		if (iterator.hasNext()) {
 			Solution solution = iterator.next();
 			instance = solution.instance();
+			if (logger.isLoggable(Level.FINE)) {
+				logger.fine("CNF translated in " + solution.stats().translationTime()
+				        + " ms and solved in " + solution.stats().solvingTime() + "ms ("
+			            + solution.stats().clauses() + " clauses, "
+						+ solution.stats().variables() + " variables, "
+						+ solution.stats().primaryVariables() + " primary variables)");
+			}
 					/* TO DO: maybe add a preference for this: */
 					/* the information is printed on the output stream and then
 					   read by ProB in get_solutions_from_stream in kodkod_process.pl */
-					System.out.println("stats(" + solution.stats().translationTime() +
-			                  "," + solution.stats().solvingTime() +
-			                  "," + solution.stats().clauses() +
-			                  "," + solution.stats().variables() +
-			                  "," + solution.stats().primaryVariables() + "). ");
+			System.out.println("stats(" + solution.stats().translationTime() +
+					  "," + solution.stats().solvingTime() +
+					  "," + solution.stats().clauses() +
+					  "," + solution.stats().variables() +
+					  "," + solution.stats().primaryVariables() + "). ");
 		} else {
 			instance = null;
 		}
