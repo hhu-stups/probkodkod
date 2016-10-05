@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 
 import kodkod.ast.Relation;
 import kodkod.engine.Solution;
+import kodkod.engine.Statistics;
 import kodkod.instance.Instance;
 import kodkod.instance.Tuple;
 import kodkod.instance.TupleSet;
@@ -161,6 +162,14 @@ public final class Request {
 		if (iterator.hasNext()) {
 			Solution solution = iterator.next();
 			instance = solution.instance();
+					/* TO DO: maybe add a preference for this: */
+					/* the information is printed on the output stream and then
+					   read by ProB in get_solutions_from_stream in kodkod_process.pl */
+					System.out.println("stats(" + solution.stats().translationTime() +
+			                  "," + solution.stats().solvingTime() +
+			                  "," + solution.stats().clauses() +
+			                  "," + solution.stats().variables() +
+			                  "," + solution.stats().primaryVariables() + "). ");
 		} else {
 			instance = null;
 		}
