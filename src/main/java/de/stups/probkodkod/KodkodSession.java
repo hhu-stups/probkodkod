@@ -6,7 +6,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import de.prob.prolog.output.IPrologTermOutput;
-import de.stups.probkodkod.sat.SAT4JWithTimeoutFactory;
 import kodkod.engine.Solver;
 import kodkod.engine.satlab.SATFactory;
 import kodkod.instance.TupleSet;
@@ -35,23 +34,10 @@ public class KodkodSession {
 		problems.put(id, problem);
 
 		final Solver solver = new Solver();
-		switch (sat) {
-		case sat4j:
-			solver.options().setSolver(new SAT4JWithTimeoutFactory(timeout));
-			break;
-		case glucose:
-			solver.options().setSolver(SATFactory.Glucose);
-			break;
-		case lingeling:
-			solver.options().setSolver(SATFactory.Lingeling);
-			break;
-		case minisat:
-			solver.options().setSolver(SATFactory.MiniSat);
-			break;
-		default:
-			solver.options().setSolver(new SAT4JWithTimeoutFactory(timeout));
-			break;
-		}
+
+		SATFactory satFactory = SolverChecker.determineSatFactory(sat);
+		solver.options().setSolver(satFactory);
+
 		solver.options().setSymmetryBreaking(symmetry);
 		final Integer bitwidth = problem.getBitwidth();
 		if (bitwidth != null) {
