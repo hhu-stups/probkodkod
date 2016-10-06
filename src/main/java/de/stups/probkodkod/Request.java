@@ -7,14 +7,13 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import de.prob.prolog.output.IPrologTermOutput;
+import de.stups.probkodkod.types.TupleType;
 import kodkod.ast.Relation;
 import kodkod.engine.Solution;
-import kodkod.engine.Statistics;
 import kodkod.instance.Instance;
 import kodkod.instance.Tuple;
 import kodkod.instance.TupleSet;
-import de.prob.prolog.output.IPrologTermOutput;
-import de.stups.probkodkod.types.TupleType;
 
 /**
  * A request stores the information about a ongoing query in the current
@@ -29,13 +28,11 @@ public final class Request {
 	private final RelationInfo[] variables;
 	private final Iterator<Solution> iterator;
 
-	public Request(final RelationInfo[] variables,
-			final Iterator<Solution> iterator) {
+	public Request(final RelationInfo[] variables, final Iterator<Solution> iterator) {
 		this.variables = variables;
 		this.iterator = iterator;
 		if (logger.isLoggable(Level.FINE)) {
-			logger.fine("request created: return variables are: "
-					+ Arrays.asList(variables));
+			logger.fine("request created: return variables are: " + Arrays.asList(variables));
 		}
 	}
 
@@ -95,14 +92,18 @@ public final class Request {
 			pto.closeTerm();
 			pto.fullstop();
 			if (logger.isLoggable(Level.FINE)) {
-				logger.fine("wrote " + num + " solutions, computed in "
-						+ duration + "ms");
+				logger.fine("wrote " + num + " solutions, computed in " + duration + "ms");
 			}
 			return solutionsPresent;
 		} catch (RuntimeException ex) {
 			// timeout of the solver is wrapped in a runtime exception
 			if ("timed out".equals(ex.getMessage())) {
 				pto.printAtom("sat_timeout");
+				pto.fullstop();
+				return true;
+			}
+			if ("second solution of non-incremental solver requested".equals(ex.getMessage())) {
+				pto.printAtom("sat_non_incremental");
 				pto.fullstop();
 				return true;
 			}
@@ -117,14 +118,12 @@ public final class Request {
 				pto.openList();
 				for (int i = 0; i < variables.length; i++) {
 					final RelationInfo relinfo = variables[i];
-					final TupleSet tupleSet = instance.tuples(relinfo
-							.getRelation());
+					final TupleSet tupleSet = instance.tuples(relinfo.getRelation());
 					final TupleType tupleType = relinfo.getTupleType();
 					pto.openTerm(tupleType.isSingleton() ? "b" : "s");
 					pto.printAtom(relinfo.getId());
 					if (tupleType.isSingleton()) {
-						final Tuple tuple = tupleSet.isEmpty() ? null
-								: tupleSet.iterator().next();
+						final Tuple tuple = tupleSet.isEmpty() ? null : tupleSet.iterator().next();
 						writeTuple(pto, tupleType, tupleSet, tuple);
 					} else {
 						pto.openList();
@@ -139,15 +138,13 @@ public final class Request {
 		pto.closeList();
 	}
 
-	private void writeTupleSet(final IPrologTermOutput pto,
-			final TupleType tupleType, final TupleSet tupleSet) {
+	private void writeTupleSet(final IPrologTermOutput pto, final TupleType tupleType, final TupleSet tupleSet) {
 		for (Tuple tuple : tupleSet) {
 			writeTuple(pto, tupleType, tupleSet, tuple);
 		}
 	}
 
-	private void writeTuple(final IPrologTermOutput pto,
-			final TupleType tupleType, final TupleSet tupleSet,
+	private void writeTuple(final IPrologTermOutput pto, final TupleType tupleType, final TupleSet tupleSet,
 			final Tuple tuple) {
 		final int[] intTuple = tupleType.decodeTuple(tuple, tupleSet);
 		pto.openList();
@@ -163,20 +160,19 @@ public final class Request {
 			Solution solution = iterator.next();
 			instance = solution.instance();
 			if (logger.isLoggable(Level.FINE)) {
-				logger.fine("CNF translated in " + solution.stats().translationTime()
-				        + " ms and solved in " + solution.stats().solvingTime() + "ms ("
-			            + solution.stats().clauses() + " clauses, "
-						+ solution.stats().variables() + " variables, "
-						+ solution.stats().primaryVariables() + " primary variables)");
+				logger.fine("CNF translated in " + solution.stats().translationTime() + " ms and solved in "
+						+ solution.stats().solvingTime() + "ms (" + solution.stats().clauses() + " clauses, "
+						+ solution.stats().variables() + " variables, " + solution.stats().primaryVariables()
+						+ " primary variables)");
 			}
-					/* TO DO: maybe add a preference for this: */
-					/* the information is printed on the output stream and then
-					   read by ProB in get_solutions_from_stream in kodkod_process.pl */
-			System.out.println("stats(" + solution.stats().translationTime() +
-					  "," + solution.stats().solvingTime() +
-					  "," + solution.stats().clauses() +
-					  "," + solution.stats().variables() +
-					  "," + solution.stats().primaryVariables() + "). ");
+			/* TO DO: maybe add a preference for this: */
+			/*
+			 * the information is printed on the output stream and then read by
+			 * ProB in get_solutions_from_stream in kodkod_process.pl
+			 */
+			System.out.println("stats(" + solution.stats().translationTime() + "," + solution.stats().solvingTime()
+					+ "," + solution.stats().clauses() + "," + solution.stats().variables() + ","
+					+ solution.stats().primaryVariables() + "). ");
 		} else {
 			instance = null;
 		}

@@ -198,7 +198,7 @@ public final class ImmutableProblem {
 				logger.info(bounds.toString());
 			}
 
-			return new Request(variables, Arrays.asList(sol).iterator());
+			return new Request(variables, new NonIncrementalSolverSolutionIterator(sol));
 		}
 	}
 
