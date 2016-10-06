@@ -13,7 +13,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
-import kodkod.engine.satlab.SATFactory;
 import de.prob.prolog.output.IPrologTermOutput;
 import de.prob.prolog.output.PrologTermOutput;
 import de.stups.probkodkod.parser.lexer.Lexer;
@@ -24,6 +23,7 @@ import de.stups.probkodkod.parser.parser.ParserException;
 import de.stups.probkodkod.tools.LogReader;
 import de.stups.probkodkod.tools.LogWriter;
 import de.stups.probkodkod.tools.MergeWriter;
+import kodkod.engine.satlab.SATFactory;
 
 /**
  * Main class for the Kodkod wrapper.
@@ -87,13 +87,11 @@ public class KodkodInteraction {
 				out = new PrintWriter(System.out);
 			} else {
 				MergeWriter merge = new MergeWriter(fw);
-				in = new LogReader(new InputStreamReader(System.in),
-						merge.createWriter("  ProB:"));
-				out = new PrintWriter(new LogWriter(new OutputStreamWriter(
-						System.out), merge.createWriter("Kodkod:")));
+				in = new LogReader(new InputStreamReader(System.in), merge.createWriter("  ProB:"));
+				out = new PrintWriter(new LogWriter(new OutputStreamWriter(System.out), merge.createWriter("Kodkod:")));
 			}
 
-			is_up_and_running(System.out);
+			is_up_and_running(System.out, SATSolver.valueOf(args[0]));
 
 			KodkodInteraction interaction = new KodkodInteraction();
 			interaction.interaction(in, out);
@@ -107,8 +105,8 @@ public class KodkodInteraction {
 		}
 	}
 
-	private static void is_up_and_running(PrintStream out) {
-		SATFactory satfac = SolverChecker.determineSatFactory();
+	private static void is_up_and_running(PrintStream out, SATSolver satSolver) {
+		SATFactory satfac = SolverChecker.determineSatFactory(satSolver);
 		out.println("ProB-Kodkod started: " + satfac.toString());
 	}
 

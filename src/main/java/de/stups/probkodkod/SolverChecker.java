@@ -25,16 +25,25 @@ import kodkod.instance.Universe;
  */
 public class SolverChecker {
 	private static final Logger LOGGER = Logger.getLogger("de.stups.probkodkod");
-	private static final SATFactory[] FACTORIES = { SATFactory.Lingeling, SATFactory.Glucose, SATFactory.MiniSat,
-			new SAT4JWithTimeoutFactory() };
 
-	// private static final SATFactory[] FACTORIES = {
-	// new SAT4JWithTimeoutFactory(), SATFactory.MiniSat,
-	// SATFactory.DefaultSAT4J };
+	public static SATFactory determineSatFactory(SATSolver satSolver) {
+		switch (satSolver) {
+		case glucose:
+			return determineSatFactory(SATFactory.Glucose, new SAT4JWithTimeoutFactory());
+		case lingeling:
+			return determineSatFactory(SATFactory.Lingeling, new SAT4JWithTimeoutFactory());
+		case minisat:
+			return determineSatFactory(SATFactory.MiniSat, new SAT4JWithTimeoutFactory());
+		case sat4j:
+			return determineSatFactory(new SAT4JWithTimeoutFactory());
+		default:
+			throw new Error("No valid SAT solver back-end for Kodkod selected.");
+		}
+	}
 
-	public static SATFactory determineSatFactory() {
+	public static SATFactory determineSatFactory(SATFactory... factories) {
 		Map<String, Throwable> throwables = new HashMap<String, Throwable>();
-		for (final SATFactory factory : FACTORIES) {
+		for (final SATFactory factory : factories) {
 			try {
 				check(factory);
 				// the factory seems to work, we use it
