@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import de.stups.probkodkod.types.TupleType;
 import kodkod.ast.Formula;
 import kodkod.engine.Solution;
 import kodkod.engine.Solver;
@@ -17,7 +18,6 @@ import kodkod.instance.Bounds;
 import kodkod.instance.TupleFactory;
 import kodkod.instance.TupleSet;
 import kodkod.instance.Universe;
-import de.stups.probkodkod.types.TupleType;
 
 /**
  * This is the immutable Version of a Kodkod problem description. Objects of
@@ -34,8 +34,7 @@ import de.stups.probkodkod.types.TupleType;
  * @author plagge
  */
 public final class ImmutableProblem {
-	private static final Logger logger = Logger
-			.getLogger(ImmutableProblem.class.getName());
+	private static final Logger logger = Logger.getLogger(ImmutableProblem.class.getName());
 
 	// The id of the problem
 	private final String id;
@@ -57,10 +56,8 @@ public final class ImmutableProblem {
 	// The factory is used to create tuples and tupleSets
 	private final Universe universe;
 
-	public ImmutableProblem(final String id, final Formula formula,
-			final Integer bitwidth, final Universe universe,
-			final Collection<RelationInfo> infos, final int numberOffset,
-			final int[] numbers) {
+	public ImmutableProblem(final String id, final Formula formula, final Integer bitwidth, final Universe universe,
+			final Collection<RelationInfo> infos, final int numberOffset, final int[] numbers) {
 		this.id = id;
 		this.solverBitwidth = bitwidth;
 		this.universe = universe;
@@ -80,10 +77,8 @@ public final class ImmutableProblem {
 		}
 	}
 
-	private static Bounds setUpBounds(final Universe universe,
-			final RelationInfo[] variableInfos,
-			final Map<String, RelationInfo> relations,
-			final Collection<RelationInfo> infos) {
+	private static Bounds setUpBounds(final Universe universe, final RelationInfo[] variableInfos,
+			final Map<String, RelationInfo> relations, final Collection<RelationInfo> infos) {
 		Bounds preBounds = new Bounds(universe);
 		int indexVar = 0;
 		for (final RelationInfo relinfo : infos) {
@@ -101,8 +96,7 @@ public final class ImmutableProblem {
 		return preBounds;
 	}
 
-	private static void registerNumbers(final Bounds bounds,
-			final int numberOffset, final int[] numbers) {
+	private static void registerNumbers(final Bounds bounds, final int numberOffset, final int[] numbers) {
 		if (numbers != null) {
 			final Universe universe = bounds.universe();
 			final TupleFactory factory = universe.factory();
@@ -113,8 +107,7 @@ public final class ImmutableProblem {
 		}
 	}
 
-	private Formula addOnePredicates(Formula formula,
-			final RelationInfo[] variables) {
+	private Formula addOnePredicates(Formula formula, final RelationInfo[] variables) {
 		for (RelationInfo relinfo : variables) {
 			final TupleType tupleType = relinfo.getTupleType();
 			if (tupleType.formulaOneShouldBeAdded()) {
@@ -168,8 +161,7 @@ public final class ImmutableProblem {
 	 * @return A request object
 	 * @see Request
 	 */
-	public Request createRequest(final Solver solver, final boolean signum,
-			final Map<String, TupleSet> values) {
+	public Request createRequest(final Solver solver, final boolean signum, final Map<String, TupleSet> values) {
 		final Bounds bounds = preBounds.clone();
 
 		final int resultSize = variableInfos.length - values.size();
@@ -187,14 +179,27 @@ public final class ImmutableProblem {
 			}
 		}
 		final Formula effFormula = signum ? formula : formula.not();
-		Iterator<Solution> iterator = solver.solveAll(effFormula, bounds);
-		if (logger.isLoggable(Level.FINE)) {
-			logger.fine("request for '" + id + "': args=" + values.keySet()
-					+ ", remaining vars=" + Arrays.asList(variables));
-			logger.info("formula: " + effFormula);
-			logger.info(bounds.toString());
+
+		try {
+			Iterator<Solution> iterator = solver.solveAll(effFormula, bounds);
+			if (logger.isLoggable(Level.FINE)) {
+				logger.fine("request for '" + id + "': args=" + values.keySet() + ", remaining vars="
+						+ Arrays.asList(variables));
+				logger.info("formula: " + effFormula);
+				logger.info(bounds.toString());
+			}
+			return new Request(variables, iterator);
+		} catch (IllegalArgumentException e) {
+			Solution sol = solver.solve(effFormula, bounds);
+			if (logger.isLoggable(Level.FINE)) {
+				logger.fine("request for '" + id + "': args=" + values.keySet() + ", remaining vars="
+						+ Arrays.asList(variables));
+				logger.info("formula: " + effFormula);
+				logger.info(bounds.toString());
+			}
+
+			return new Request(variables, Arrays.asList(sol).iterator());
 		}
-		return new Request(variables, iterator);
 	}
 
 	public Universe getUniverse() {
