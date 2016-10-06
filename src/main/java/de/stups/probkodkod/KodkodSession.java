@@ -35,7 +35,7 @@ public class KodkodSession {
 
 		final Solver solver = new Solver();
 
-		SATFactory satFactory = SolverChecker.determineSatFactory(sat);
+		SATFactory satFactory = SolverChecker.determineSatFactory(sat, timeout);
 		solver.options().setSolver(satFactory);
 
 		solver.options().setSymmetryBreaking(symmetry);

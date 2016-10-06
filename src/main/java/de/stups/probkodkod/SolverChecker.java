@@ -27,15 +27,20 @@ public class SolverChecker {
 	private static final Logger LOGGER = Logger.getLogger("de.stups.probkodkod");
 
 	public static SATFactory determineSatFactory(SATSolver satSolver) {
+		// a default timeout - an individual one is requested by prob anyway
+		return determineSatFactory(satSolver, 1500);
+	}
+
+	public static SATFactory determineSatFactory(SATSolver satSolver, long timeout) {
 		switch (satSolver) {
 		case glucose:
-			return determineSatFactory(SATFactory.Glucose, new SAT4JWithTimeoutFactory());
+			return determineSatFactory(SATFactory.Glucose, new SAT4JWithTimeoutFactory(timeout));
 		case lingeling:
-			return determineSatFactory(SATFactory.Lingeling, new SAT4JWithTimeoutFactory());
+			return determineSatFactory(SATFactory.Lingeling, new SAT4JWithTimeoutFactory(timeout));
 		case minisat:
-			return determineSatFactory(SATFactory.MiniSat, new SAT4JWithTimeoutFactory());
+			return determineSatFactory(SATFactory.MiniSat, new SAT4JWithTimeoutFactory(timeout));
 		case sat4j:
-			return determineSatFactory(new SAT4JWithTimeoutFactory());
+			return determineSatFactory(new SAT4JWithTimeoutFactory(timeout));
 		default:
 			throw new Error("No valid SAT solver back-end for Kodkod selected.");
 		}
