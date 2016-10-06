@@ -21,6 +21,7 @@ public class NonIncrementalSolverSolutionIterator implements Iterator<Solution> 
 	@Override
 	public Solution next() {
 		if (!returned) {
+			returned = true;
 			return sol;
 		}
 		throw new RuntimeException("second solution of non-incremental solver requested");
