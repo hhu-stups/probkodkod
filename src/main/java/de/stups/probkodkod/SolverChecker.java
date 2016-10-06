@@ -41,7 +41,7 @@ public class SolverChecker {
 		}
 	}
 
-	public static SATFactory determineSatFactory(SATFactory... factories) {
+	private static SATFactory determineSatFactory(SATFactory... factories) {
 		Map<String, Throwable> throwables = new HashMap<String, Throwable>();
 		for (final SATFactory factory : factories) {
 			try {

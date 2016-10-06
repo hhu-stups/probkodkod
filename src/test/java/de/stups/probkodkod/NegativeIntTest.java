@@ -5,6 +5,9 @@ package de.stups.probkodkod;
 
 import java.util.Iterator;
 
+import org.junit.Assert;
+import org.junit.Test;
+
 import kodkod.ast.Formula;
 import kodkod.ast.IntConstant;
 import kodkod.ast.Relation;
@@ -16,9 +19,6 @@ import kodkod.instance.Tuple;
 import kodkod.instance.TupleFactory;
 import kodkod.instance.TupleSet;
 import kodkod.instance.Universe;
-
-import org.junit.Assert;
-import org.junit.Test;
 
 /**
  * @author plagge
@@ -45,7 +45,7 @@ public class NegativeIntTest {
 		bounds.bound(x, factory.allOf(1));
 		final Formula formula = x.sum().eq(IntConstant.constant(value));
 		final Solver solver = new Solver();
-		solver.options().setSolver(SolverChecker.determineSatFactory());
+		solver.options().setSolver(SolverChecker.determineSatFactory(SATSolver.sat4j));
 		solver.options().setBitwidth(5);
 		final Iterator<Solution> iterator = solver.solveAll(formula, bounds);
 		Assert.assertTrue("solution expected", iterator.hasNext());
@@ -58,9 +58,7 @@ public class NegativeIntTest {
 			final Object atom = tuple.atom(0);
 			sum += ((Integer) atom).intValue();
 		}
-		Assert.assertEquals("constant in formula and solution should be same",
-				value, sum);
-		Assert.assertTrue("no other solution expected", !iterator.hasNext()
-				|| iterator.next().instance() == null);
+		Assert.assertEquals("constant in formula and solution should be same", value, sum);
+		Assert.assertTrue("no other solution expected", !iterator.hasNext() || iterator.next().instance() == null);
 	}
 }
