@@ -274,8 +274,14 @@ public class KodkodAnalysis extends DepthFirstAdapter {
 			int size = extractInt(node.getSize()); // the maximum number of
 													// solutions to be computed
 			final Map<String, TupleSet> args = extractArguments(node.getArguments(), problem);
-			session.request(problem, signum, args);
-			session.writeNextSolutions(problem, size, pto);
+			
+			try {
+				session.request(problem, signum, args);
+				session.writeNextSolutions(problem, size, pto);			
+			} catch (Exception e) {
+			    pto.openTerm("unknown").printAtom(problemId).closeTerm().fullstop();
+			    throw e;
+			}
 		} else {
 			pto.openTerm("unknown").printAtom(problemId).closeTerm().fullstop();
 		}
