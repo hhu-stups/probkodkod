@@ -1,4 +1,4 @@
-project.version = '1.0.7-SNAPSHOT';
+project.version = '1.0.7-SNAPSHOT'
 project.group = 'de.hhu.stups'
 
 apply plugin: 'java'
@@ -7,152 +7,152 @@ apply plugin: 'maven'
 apply plugin: 'application'
 
 repositories {
-    mavenCentral()
-    flatDir {
-       dirs 'libs'
-   }
+	mavenCentral()
+	flatDir {
+		dirs 'libs'
+	}
 }
 
 configurations {
-    sablecc
+	sablecc
 }
 
 configurations {
-    kodkod
+	kodkod
 }
 
 
 sourceSets {
-    main {
-        java {
-            srcDirs = ['build/temp','src/main/java']
-        }
-    }
+	main {
+		java {
+			srcDirs = ['build/temp', 'src/main/java']
+		}
+	}
 }
 
 sourceSets.main.compileClasspath += configurations.kodkod
 sourceSets.test.runtimeClasspath += files(sourceSets.main.java.srcDirs)
 
 dependencies {
-    sablecc 'de.hhu.stups:sablecc:3.2.10'
-    compile 'de.hhu.stups:prologlib:2.4.40'
-    kodkod name: 'kodkod'
-    testCompile files('libs/kodkod.jar')
-    compile 'org.ow2.sat4j:org.ow2.sat4j.core:2.3.5'
-    testCompile 'junit:junit:4.8.2'
- }
+	sablecc 'de.hhu.stups:sablecc:3.2.10'
+	compile 'de.hhu.stups:prologlib:2.4.40'
+	kodkod name: 'kodkod'
+	testCompile files('libs/kodkod.jar')
+	compile 'org.ow2.sat4j:org.ow2.sat4j.core:2.3.5'
+	testCompile 'junit:junit:4.8.2'
+}
 
-task genParser(type:JavaExec) {
-    doFirst{ file('build/temp').mkdirs() }
-    inputs.dir new File('src/main/resources')
-    outputs.dir new File('build/temp')
-    main = 'org.sablecc.sablecc.SableCC'
-    classpath = configurations.sablecc
-    maxHeapSize = '1024m'
-    args = ['-d','build/temp','src/main/resources/problem.grammar']
+task genParser(type: JavaExec) {
+	doFirst {
+		file('build/temp').mkdirs()
+	}
+	inputs.dir new File('src/main/resources')
+	outputs.dir new File('build/temp')
+	main = 'org.sablecc.sablecc.SableCC'
+	classpath = configurations.sablecc
+	maxHeapSize = '1024m'
+	args = ['-d', 'build/temp', 'src/main/resources/problem.grammar']
 }
 
 compileJava {
- dependsOn = ['genParser']
+	dependsOn = ['genParser']
 }
 
 test {
-  doFirst {
-    println "testing"
-  }
-
+	doFirst {
+		println "testing"
+	}
 }
 
 mainClassName = 'de.stups.probkodkod.KodkodInteraction'
 
 javadoc {
-  failOnError= false
+	failOnError = false
 }
 
 jar {
- manifest {
-       attributes 'Main-Class': mainClassName,
-                  'Implementation-Title': 'ProB Kodkod',
-                  'Implementation-Version': project.version
-   }
- include '**/*.class'
- include '**/*.java'
- exclude '**.*.scc'
- from 'build/temp'
- include '**/*.dat'
- include '**/*.properties'
- from configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
- from configurations.kodkod.collect { it.isDirectory() ? it : zipTree(it) }
+	manifest {
+		attributes([
+			'Main-Class': mainClassName,
+			'Implementation-Title': 'ProB Kodkod',
+			'Implementation-Version': project.version,
+		])
+	}
+	include '**/*.class'
+	include '**/*.java'
+	exclude '**.*.scc'
+	from 'build/temp'
+	include '**/*.dat'
+	include '**/*.properties'
+	from configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+	from configurations.kodkod.collect { it.isDirectory() ? it : zipTree(it) }
 }
 
 if (project.hasProperty('ossrhUsername') && project.hasProperty('ossrhPassword')) {
+	apply plugin: 'signing'
 
-apply plugin: 'signing'
+	ext."signing.secretKeyRingFile" = rootProject.file("secring.gpg").absolutePath
 
-ext."signing.secretKeyRingFile" = rootProject.file("secring.gpg").absolutePath
+	signing {
+		sign configurations.archives
+	}
 
-signing {
-    sign configurations.archives
-}
+	task javadocJar(type: Jar) {
+		classifier = 'javadoc'
+		from javadoc
+	}
 
+	task sourcesJar(type: Jar) {
+		classifier = 'sources'
+		from sourceSets.main.allSource
+	}
 
-task javadocJar(type: Jar) {
-	 classifier = 'javadoc'
-	 from javadoc
-}
+	artifacts {
+		archives javadocJar, sourcesJar
+	}
 
-task sourcesJar(type: Jar) {
-	 classifier = 'sources'
-	 from sourceSets.main.allSource
-}
+	uploadArchives {
+		repositories {
+			mavenDeployer {
+				beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
 
-artifacts {
-	 archives javadocJar, sourcesJar
-}
+				repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+					authentication(userName: ossrhUsername, password: ossrhPassword)
+				}
 
-uploadArchives {
-  repositories {
-    mavenDeployer {
-      beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+				snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+					authentication(userName: ossrhUsername, password: ossrhPassword)
+				}
 
-      repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
-        authentication(userName: ossrhUsername, password: ossrhPassword)
-      }
+				pom.project {
+					name 'ProB Kodkod'
+					packaging 'jar'
+					// optionally artifactId can be defined here
+					description "Wrapper to use Kodkod in ProB."
+					url 'https://github.com/hhu-stups/probkodkod'
 
-      snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
-        authentication(userName: ossrhUsername, password: ossrhPassword)
-      }
+					licenses {
+						license {
+							name 'MIT License'
+							url 'http://research.microsoft.com/en-us/um/people/lamport/tla/license.html'
+						}
+					}
 
-      pom.project {
-        name 'ProB Kodkod'
-        packaging 'jar'
-        // optionally artifactId can be defined here
-        description "Wrapper to use Kodkod in ProB."
-        url 'https://github.com/hhu-stups/probkodkod'
+					scm {
+						connection 'scm:git:git://github.com/hhu-stups/probkodkod.git'
+						developerConnection 'scm:git:git@github.com:hhu-stups/probkodkod.git'
+						url 'https://github.com/hhu-stups/probkodkod'
+					}
 
-        licenses {
-      				 license {
-      					 name 'MIT License'
-      					 url 'http://research.microsoft.com/en-us/um/people/lamport/tla/license.html'
-      				 }
-      			 }
-
-        scm {
-          connection 'scm:git:git://github.com/hhu-stups/probkodkod.git'
-          developerConnection 'scm:git:git@github.com:hhu-stups/probkodkod.git'
-          url 'https://github.com/hhu-stups/probkodkod'
-        }
-
-
-        developers {
-          developer {
-            id 'bendisposto'
-            name 'Jens Bendisposto'
-            email 'jens@bendisposto.de'
-          }
-        }
-      }
-    }
-  }
-}
+					developers {
+						developer {
+							id 'bendisposto'
+							name 'Jens Bendisposto'
+							email 'jens@bendisposto.de'
+						}
+					}
+				}
+			}
+		}
+	}
 }
