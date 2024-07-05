@@ -134,7 +134,7 @@ if (project.hasProperty('ossrhUsername') && project.hasProperty('ossrhPassword')
 					licenses {
 						license {
 							name 'MIT License'
-							url 'http://research.microsoft.com/en-us/um/people/lamport/tla/license.html'
+							url 'https://github.com/emina/kodkod/blob/v2.1/LICENSE'
 						}
 					}
 
