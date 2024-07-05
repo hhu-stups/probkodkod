@@ -89,6 +89,8 @@ if (project.hasProperty('ossrhUsername') && project.hasProperty('ossrhPassword')
 
 apply plugin: 'signing'
 
+ext."signing.secretKeyRingFile" = rootProject.file("secring.gpg").absolutePath
+
 signing {
     sign configurations.archives
 }
