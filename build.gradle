@@ -129,7 +129,7 @@ if (project.hasProperty('ossrhUsername') && project.hasProperty('ossrhPassword')
 					packaging 'jar'
 					// optionally artifactId can be defined here
 					description "Wrapper to use Kodkod in ProB."
-					url 'https://github.com/hhu-stups/probkodkod'
+					url 'https://gitlab.cs.uni-duesseldorf.de/general/stups/probkodkod'
 
 					licenses {
 						license {
@@ -139,9 +139,9 @@ if (project.hasProperty('ossrhUsername') && project.hasProperty('ossrhPassword')
 					}
 
 					scm {
-						connection 'scm:git:git://github.com/hhu-stups/probkodkod.git'
-						developerConnection 'scm:git:git@github.com:hhu-stups/probkodkod.git'
-						url 'https://github.com/hhu-stups/probkodkod'
+						connection 'scm:git:https://gitlab.cs.uni-duesseldorf.de/general/stups/probkodkod.git'
+						developerConnection 'scm:git:git@gitlab.cs.uni-duesseldorf.de:general/stups/probkodkod.git'
+						url 'https://gitlab.cs.uni-duesseldorf.de/general/stups/probkodkod'
 					}
 
 					developers {
