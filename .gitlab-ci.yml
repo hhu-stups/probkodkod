@@ -15,11 +15,11 @@ tests:
   script: ./gradlew ${GRADLE_ARGS} check
   artifacts:
     paths:
-      - "*/build/reports"
-      - "*/build/test-results"
+      - "build/reports"
+      - "build/test-results"
     reports:
       junit:
-        - "*/build/test-results/**/TEST-*.xml"
+        - "build/test-results/**/TEST-*.xml"
     when: always
 
 publish:
