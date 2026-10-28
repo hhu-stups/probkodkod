@@ -120,7 +120,7 @@ Productions
   reltype = {exact} keyword_exact | {subset} keyword_subset;
   
   tupleset = [ol]:parenl [tuples]:tuple+ [or]:parenr;
-  tuple = anglel [numbers]:number+ angler;
+  tuple = anglel [numbers]:znumber+ angler;
    
   range =
       {typeref} identifier

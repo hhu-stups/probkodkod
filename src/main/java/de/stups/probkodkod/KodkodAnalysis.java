@@ -732,7 +732,7 @@ public class KodkodAnalysis extends DepthFirstAdapter {
 		final Collection<int[]> tuples = new ArrayList<int[]>();
 		for (final PTuple pTuple : ptuples) {
 			final ATuple aTuple = (ATuple) pTuple;
-			final int[] numbers = extractNumbers(aTuple.getNumbers());
+			final int[] numbers = extractZNumbers(aTuple.getNumbers());
 			if (numbers.length != arity)
 				throw new IllegalArgumentException(
 						"expected " + arity + "-tuple, but is a " + numbers.length + "-tuple");
@@ -747,6 +747,16 @@ public class KodkodAnalysis extends DepthFirstAdapter {
 		for (final TNumber node : nodes) {
 			result[i] = extractInt(node);
 			i++;
+		}
+		return result;
+	}
+    // tuples can contain negative integers (e.g. values of integer variables)
+	private int[] extractZNumbers(final Collection<PZnumber> nodes) {
+		final int[] result = new int[nodes.size()];
+		int i = 0;
+		for (final PZnumber node : nodes) {
+		        result[i] = extractInt(node);
+		        i++;
 		}
 		return result;
 	}
