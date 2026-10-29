@@ -24,7 +24,7 @@ dependencies {
 	sablecc 'de.hhu.stups:sablecc:3.2.10'
 	implementation 'de.hhu.stups:prologlib:2.4.40'
 	kodkod files('libs/kodkod.jar')
-	implementation 'org.ow2.sat4j:org.ow2.sat4j.core:2.3.5'
+	implementation 'org.ow2.sat4j:org.ow2.sat4j.core:2.3.6'
 	testImplementation files('libs/kodkod.jar')
 	testImplementation 'junit:junit:4.8.2'
 }
